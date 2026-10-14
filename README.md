@@ -70,10 +70,23 @@ Hash password owner lama (`$2y$`) langsung kompatibel. Booking lama otomatis dib
 
 Perilaku lain: pencarian lokasi/tanggal di beranda & daftar apartemen kini berfungsi (sebelumnya hanya tampilan); transisi settlement divalidasi di service (status `paid` tidak bisa ditolak lagi) dan memakai row lock agar saldo tidak bisa dicairkan ganda.
 
-## Belum dikerjakan (di luar port 1:1)
-Alur CRM lanjutan (detail, timeline, survey, foto, publish ke unit dijual) dan laporan penjualan — Paket D di audit; UAT end-to-end dengan Midtrans Sandbox di staging HTTPS.
+## Alur CRM titip jual
+Halaman **CRM Titip Jual** → klik *Detail* pada lead (`/admin/sale-requests/{id}`):
+- Stepper status `baru → follow up → survey → foto unit → listing → negosiasi → closing → selesai` (+ `batal`), perubahan status dengan catatan.
+- **Timeline** semua aktivitas (pengajuan masuk, status, catatan, survey, penawaran, foto, publish, closing) lengkap dengan admin pelaku.
+- **Jadwal survey** (status otomatis maju ke *survey*), **penawaran pembeli** (maju ke *negosiasi*), **foto unit** (maju ke *foto unit*).
+- **Publikasikan** lead menjadi listing di `/jual-beli` (data & foto disalin; hanya sekali).
+- **Closing**: membuat data *Komisi Penjualan* (terhubung ke lead dan unit, invoice `CLS#####`) dan menandai unit `terjual` (hilang dari halaman publik); hanya sekali per lead.
+- Daftar CRM: filter per status (klik kartu statistik) dan pencarian pemilik/apartemen/WA.
+Perubahan DB: migrasi `2026_01_02_000001_crm_workflow` (tabel `sale_request_events`, `sale_request_photos`, + 4 kolom di `sale_requests`). Foto lead disimpan di `storage/app/public/sale_requests/`.
+
+## Laporan Penjualan
+Menu **Laporan Penjualan** (`/admin/sales-report`): rekap closing dari Komisi Penjualan per periode (default 1 Januari s/d hari ini) — jumlah closing, total harga deal, komisi (+ rata-rata %), biaya lain, hak penjual; rekap per bulan, per apartemen (urut harga deal), dan detail closing dengan link invoice. Closing berstatus `batal` dikecualikan kecuali dicentang. Ekspor CSV tersedia (ringkasan + rekap + detail).
+
+## Belum dikerjakan
+UAT end-to-end dengan Midtrans Sandbox di staging HTTPS.
 
 ## Tes
 ```bash
-php artisan test      # 31 tes: booking/bentrok/promo/kedaluwarsa, Midtrans, settlement, akses & CSRF, render semua halaman
+php artisan test      # 42 tes: booking/bentrok/promo/kedaluwarsa, Midtrans, settlement, akses & CSRF, alur CRM, render semua halaman
 ```

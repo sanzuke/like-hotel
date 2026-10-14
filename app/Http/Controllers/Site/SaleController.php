@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Models\SaleRequest;
 use App\Models\SaleUnit;
+use App\Services\SaleRequestService;
 use Illuminate\Http\Request;
 
 class SaleController extends Controller
@@ -39,7 +40,8 @@ class SaleController extends Controller
             'notes' => ['nullable', 'string', 'max:2000'],
         ]);
 
-        SaleRequest::create($data + ['status' => 'baru']);
+        $lead = SaleRequest::create($data + ['status' => 'baru']);
+        app(SaleRequestService::class)->intake($lead);
 
         return redirect()->route('sale.request')
             ->with('status', 'Pengajuan titip jual berhasil dikirim. Tim Like Hotel akan menghubungi Anda.');

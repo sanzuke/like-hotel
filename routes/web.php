@@ -103,8 +103,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('sale-units/{saleUnit}/images/{image}/cover', [Admin\SaleUnitController::class, 'setCover'])->name('sale-units.images.cover');
 
         Route::get('sale-requests', [Admin\SaleRequestController::class, 'index'])->name('sale-requests');
+        Route::get('sale-requests/{saleRequest}', [Admin\SaleRequestController::class, 'show'])->name('sale-requests.show');
         Route::post('sale-requests/{saleRequest}/status', [Admin\SaleRequestController::class, 'status'])->name('sale-requests.status');
+        Route::post('sale-requests/{saleRequest}/note', [Admin\SaleRequestController::class, 'note'])->name('sale-requests.note');
+        Route::post('sale-requests/{saleRequest}/survey', [Admin\SaleRequestController::class, 'survey'])->name('sale-requests.survey');
+        Route::post('sale-requests/{saleRequest}/offer', [Admin\SaleRequestController::class, 'offer'])->name('sale-requests.offer');
+        Route::post('sale-requests/{saleRequest}/photos', [Admin\SaleRequestController::class, 'photos'])->name('sale-requests.photos');
+        Route::delete('sale-requests/{saleRequest}/photos/{photo}', [Admin\SaleRequestController::class, 'destroyPhoto'])->name('sale-requests.photos.destroy');
+        Route::post('sale-requests/{saleRequest}/publish', [Admin\SaleRequestController::class, 'publish'])->name('sale-requests.publish');
+        Route::post('sale-requests/{saleRequest}/close', [Admin\SaleRequestController::class, 'close'])->name('sale-requests.close');
         Route::delete('sale-requests/{saleRequest}', [Admin\SaleRequestController::class, 'destroy'])->name('sale-requests.destroy');
+
+        Route::get('sales-report', [Admin\SalesReportController::class, 'index'])->name('sales-report');
+        Route::get('sales-report/export', [Admin\SalesReportController::class, 'export'])->name('sales-report.export');
 
         Route::get('sale-commissions', [Admin\SaleCommissionController::class, 'index'])->name('sale-commissions');
         Route::post('sale-commissions', [Admin\SaleCommissionController::class, 'store'])->name('sale-commissions.store');

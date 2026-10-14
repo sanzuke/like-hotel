@@ -10,4 +10,5 @@
     'sale-units' => 'Jual Unit',
     'sale-requests' => 'CRM Titip Jual',
     'sale-commissions' => 'Komisi Penjualan',
+    'sales-report' => 'Laporan Penjualan',
 ]])

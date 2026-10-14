@@ -16,11 +16,18 @@
 </div>
 
 <div class="crm-stats-grid">
-  <div class="crm-stat-card"><span>📋 Total Pengajuan</span><strong>{{ $rows->count() }}</strong></div>
+  <a class="crm-stat-card" href="{{ route('admin.sale-requests') }}"><span>📋 Total Pengajuan</span><strong>{{ $total }}</strong></a>
   @foreach(\App\Models\SaleRequest::STATUSES as $key => $label)
-    <div class="crm-stat-card"><span>{{ $label }}</span><strong>{{ $counts[$key] ?? 0 }}</strong></div>
+    <a class="crm-stat-card" href="{{ route('admin.sale-requests', ['status' => $key]) }}" @if($filter === $key) style="outline:2px solid #087a35" @endif><span>{{ $label }}</span><strong>{{ $counts[$key] ?? 0 }}</strong></a>
   @endforeach
 </div>
+
+<form method="get" style="display:flex;gap:8px;margin:14px 0;flex-wrap:wrap">
+  @if($filter)<input type="hidden" name="status" value="{{ $filter }}">@endif
+  <input name="q" value="{{ $term }}" placeholder="Cari pemilik / apartemen / WA" style="max-width:320px">
+  <button class="btn">Cari</button>
+  @if($filter || $term)<a class="btn-outline" href="{{ route('admin.sale-requests') }}">Reset</a>@endif
+</form>
 
 <div class="crm-flow">
   <strong>Alur CRM:</strong> 🆕 Baru <span>→</span> 📞 Follow Up <span>→</span> 🏠 Survey <span>→</span> 📷 Foto Unit <span>→</span>
@@ -41,7 +48,7 @@
     @endphp
     <tr>
       <td class="crm-date-cell">{{ $r->created_at->translatedFormat('d F Y, H:i') }}</td>
-      <td><strong>{{ $r->owner_name }}</strong>
+      <td><strong><a href="{{ route('admin.sale-requests.show', $r) }}">{{ $r->owner_name }}</a></strong>
         <a class="crm-phone" href="{{ wa_link($r->owner_phone, 'Halo '.$r->owner_name) }}" target="_blank" rel="noopener">{{ $r->owner_phone ?: '-' }}</a></td>
       <td><strong>{{ $r->apartment_name }}</strong><small>{{ $r->location ?: '-' }}</small></td>
       <td><strong>{{ $r->unit_type ?: '-' }}</strong><small>{{ $fmtLuas($r->size) }}</small></td>
@@ -66,6 +73,7 @@
             </select>
             <button type="submit" class="crm-btn crm-btn-update">Simpan Status</button>
           </form>
+          <a class="crm-btn crm-btn-update" href="{{ route('admin.sale-requests.show', $r) }}">📂 Detail</a>
           <form method="post" action="{{ route('admin.sale-requests.destroy', $r) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pengajuan ini?')">
             @csrf @method('DELETE')
             <button type="submit" class="crm-btn crm-btn-delete">🗑 Hapus</button>
