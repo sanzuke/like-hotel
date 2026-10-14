@@ -1,0 +1,9 @@
+/* Tambahan untuk porting Laravel (tombol logout POST, aksi inline, dll.) */
+.sidebar a.active{background:#087a35}
+.sidebar form{margin:8px 0}
+.sidebar .logout-btn{display:block;width:100%;text-align:left;padding:12px;border:0;border-radius:8px;background:transparent;color:#fff;font:inherit;cursor:pointer}
+.sidebar .logout-btn:hover{background:#991b1b}
+form.inline{display:inline}
+button.btn-outline{cursor:pointer;font:inherit}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.pagination{display:flex;gap:6px;margin:16px 0}
