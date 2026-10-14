@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 class SaleRequest extends BaseModel
 {
     public const STATUSES = [
@@ -23,6 +26,31 @@ class SaleRequest extends BaseModel
 
     protected function casts(): array
     {
-        return ['expected_price' => 'float'];
+        return ['expected_price' => 'float', 'last_offer' => 'float', 'survey_at' => 'datetime'];
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(SaleRequestEvent::class)->orderByDesc('id');
+    }
+
+    public function photos(): HasMany
+    {
+        return $this->hasMany(SaleRequestPhoto::class)->orderBy('id');
+    }
+
+    public function saleUnit(): BelongsTo
+    {
+        return $this->belongsTo(SaleUnit::class);
+    }
+
+    public function saleCommission(): BelongsTo
+    {
+        return $this->belongsTo(SaleCommission::class);
+    }
+
+    public function isFinal(): bool
+    {
+        return in_array($this->status, ['selesai', 'batal'], true);
     }
 }
