@@ -114,6 +114,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('sale-requests/{saleRequest}/close', [Admin\SaleRequestController::class, 'close'])->name('sale-requests.close');
         Route::delete('sale-requests/{saleRequest}', [Admin\SaleRequestController::class, 'destroy'])->name('sale-requests.destroy');
 
+        Route::get('sales-report', [Admin\SalesReportController::class, 'index'])->name('sales-report');
+        Route::get('sales-report/export', [Admin\SalesReportController::class, 'export'])->name('sales-report.export');
+
         Route::get('sale-commissions', [Admin\SaleCommissionController::class, 'index'])->name('sale-commissions');
         Route::post('sale-commissions', [Admin\SaleCommissionController::class, 'store'])->name('sale-commissions.store');
         Route::get('sale-commissions/{saleCommission}/edit', [Admin\SaleCommissionController::class, 'edit'])->name('sale-commissions.edit');

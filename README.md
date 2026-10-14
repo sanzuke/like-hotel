@@ -80,10 +80,13 @@ Halaman **CRM Titip Jual** → klik *Detail* pada lead (`/admin/sale-requests/{i
 - Daftar CRM: filter per status (klik kartu statistik) dan pencarian pemilik/apartemen/WA.
 Perubahan DB: migrasi `2026_01_02_000001_crm_workflow` (tabel `sale_request_events`, `sale_request_photos`, + 4 kolom di `sale_requests`). Foto lead disimpan di `storage/app/public/sale_requests/`.
 
+## Laporan Penjualan
+Menu **Laporan Penjualan** (`/admin/sales-report`): rekap closing dari Komisi Penjualan per periode (default 1 Januari s/d hari ini) — jumlah closing, total harga deal, komisi (+ rata-rata %), biaya lain, hak penjual; rekap per bulan, per apartemen (urut harga deal), dan detail closing dengan link invoice. Closing berstatus `batal` dikecualikan kecuali dicentang. Ekspor CSV tersedia (ringkasan + rekap + detail).
+
 ## Belum dikerjakan
-Laporan penjualan khusus (rekap closing per periode) dan UAT end-to-end dengan Midtrans Sandbox di staging HTTPS.
+UAT end-to-end dengan Midtrans Sandbox di staging HTTPS.
 
 ## Tes
 ```bash
-php artisan test      # 38 tes: booking/bentrok/promo/kedaluwarsa, Midtrans, settlement, akses & CSRF, alur CRM, render semua halaman
+php artisan test      # 42 tes: booking/bentrok/promo/kedaluwarsa, Midtrans, settlement, akses & CSRF, alur CRM, render semua halaman
 ```
