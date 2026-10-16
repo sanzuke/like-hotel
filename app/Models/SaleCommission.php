@@ -34,6 +34,12 @@ class SaleCommission extends Model
         return $this->belongsTo(SaleUnit::class);
     }
 
+    /** Nomor dokumen, mis. KOM-00012. */
+    public function number(): string
+    {
+        return 'KOM-'.str_pad((string) $this->id, 5, '0', STR_PAD_LEFT);
+    }
+
     /** Hitung komisi & bersih penjual dari harga deal. */
     public static function compute(float $deal, string $type, float $value, float $other): array
     {

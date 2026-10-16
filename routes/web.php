@@ -104,6 +104,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/laporan', [Admin\ReportController::class, 'index'])->name('reports.index');
         Route::get('/laporan/export', [Admin\ReportController::class, 'export'])->name('reports.export');
 
+        Route::get('/laporan-penjualan', [Admin\SalesReportController::class, 'index'])->name('sales-report.index');
+        Route::get('/laporan-penjualan/export', [Admin\SalesReportController::class, 'export'])->name('sales-report.export');
+        Route::get('/log-midtrans', [Admin\MidtransLogController::class, 'index'])->name('midtrans-logs.index');
         Route::get('/audit-log', [Admin\AuditLogController::class, 'index'])->name('audit-logs.index');
 
         Route::get('/sale-units', [Admin\SaleUnitController::class, 'index'])->name('sale-units.index');
@@ -118,6 +121,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/sale-requests', [Admin\SaleRequestController::class, 'index'])->name('sale-requests.index');
         Route::get('/sale-requests/{saleRequest}', [Admin\SaleRequestController::class, 'show'])->name('sale-requests.show');
         Route::post('/sale-requests/{saleRequest}/notes', [Admin\SaleRequestController::class, 'addNote'])->name('sale-requests.notes');
+        Route::post('/sale-requests/{saleRequest}/offer', [Admin\SaleRequestController::class, 'addOffer'])->name('sale-requests.offer');
+        Route::post('/sale-requests/{saleRequest}/photos', [Admin\SaleRequestController::class, 'addPhotos'])->name('sale-requests.photos');
+        Route::delete('/sale-requests/{saleRequest}/photos/{photo}', [Admin\SaleRequestController::class, 'destroyPhoto'])->name('sale-requests.photos.destroy');
         Route::post('/sale-requests/{saleRequest}/survey', [Admin\SaleRequestController::class, 'scheduleSurvey'])->name('sale-requests.survey');
         Route::post('/sale-requests/{saleRequest}/publish', [Admin\SaleRequestController::class, 'publish'])->name('sale-requests.publish');
         Route::post('/sale-requests/{saleRequest}/close', [Admin\SaleRequestController::class, 'close'])->name('sale-requests.close');

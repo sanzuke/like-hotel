@@ -22,6 +22,8 @@
         ['admin.sale-units.index', 'Unit Dijual'],
         ['admin.sale-requests.index', 'CRM Titip Jual'],
         ['admin.sale-commissions.index', 'Komisi Penjualan'],
+        ['admin.sales-report.index', 'Laporan Penjualan'],
+        ['admin.midtrans-logs.index', 'Log Midtrans'],
         ['admin.audit-logs.index', 'Audit Log'],
     ] : [
         ['owner.dashboard', 'Dashboard'],

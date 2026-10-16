@@ -6,15 +6,22 @@ use App\Http\Controllers\Controller;
 use App\Models\SaleCommission;
 use App\Models\SaleRequest;
 use App\Models\SaleRequestNote;
+use App\Models\SaleRequestPhoto;
 use App\Models\SaleUnit;
 use App\Support\Audit;
 use App\Support\Fmt;
+use App\Support\ImageStore;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class SaleRequestController extends Controller
 {
+    /** Tahap awal: boleh otomatis maju saat ada penawaran / foto. */
+    private const EARLY = ['baru', 'follow up', 'survey', 'foto unit', 'listing'];
+
     public function index()
     {
         $rows = SaleRequest::latest('id')->get();
@@ -29,9 +36,10 @@ class SaleRequestController extends Controller
     public function show(SaleRequest $saleRequest)
     {
         return view('admin.sale-request-show', [
-            'r' => $saleRequest->load(['timeline', 'saleUnit', 'commission']),
+            'r' => $saleRequest->load(['timeline', 'photos', 'saleUnit', 'commission']),
             'stages' => SaleRequest::STAGES,
             'noteTypes' => SaleRequestNote::TYPES,
+            'labels' => SaleRequestNote::LABELS,
         ]);
     }
 
@@ -66,6 +74,20 @@ class SaleRequestController extends Controller
         return back()->with('success', 'Catatan ditambahkan ke timeline.');
     }
 
+    /** Penawaran dari calon pembeli; otomatis memindahkan lead tahap awal ke Negosiasi. */
+    public function addOffer(Request $request, SaleRequest $saleRequest)
+    {
+        $data = $request->validate(['amount' => 'required|numeric|gt:0', 'note' => 'nullable|string|max:1000']);
+
+        $saleRequest->update(['last_offer' => $data['amount']]);
+        $saleRequest->addNote('penawaran', 'Penawaran pembeli: '.Fmt::rupiah($data['amount']).(filled($data['note'] ?? null) ? "\n".$data['note'] : ''), (float) $data['amount']);
+        Audit::log('crm.offer', "Penawaran {$saleRequest->owner_name}: ".Fmt::rupiah($data['amount']), $saleRequest, ['amount' => $data['amount']]);
+
+        $this->advance($saleRequest, 'negosiasi', self::EARLY);
+
+        return back()->with('success', 'Penawaran dicatat.');
+    }
+
     public function scheduleSurvey(Request $request, SaleRequest $saleRequest)
     {
         $data = $request->validate(['survey_at' => 'required|date|after:now']);
@@ -74,48 +96,96 @@ class SaleRequestController extends Controller
         $saleRequest->addNote('survey', 'Survei dijadwalkan: '.$saleRequest->fresh()->survey_at->format('d-m-Y H:i'));
         Audit::log('crm.survey_scheduled', "Survei lead {$saleRequest->owner_name} dijadwalkan", $saleRequest);
 
-        if (in_array($saleRequest->status, ['baru', 'follow up'], true)) {
-            $this->changeStatus($saleRequest, 'survey');
-        }
+        $this->advance($saleRequest, 'survey', ['baru', 'follow up']);
 
         return back()->with('success', 'Jadwal survei disimpan.');
     }
 
-    /** Buat draf unit dijual dari data lead; foto & harga final diatur di halaman edit unit. */
-    public function publish(SaleRequest $saleRequest)
+    public function addPhotos(Request $request, SaleRequest $saleRequest)
     {
-        if ($saleRequest->sale_unit_id) {
-            return back()->with('error', 'Lead ini sudah dipublikasikan sebagai unit dijual.');
+        $request->validate([
+            'photos' => 'required|array|max:20',
+            'photos.*' => ImageStore::RULE,
+        ], ['photos.required' => 'Pilih minimal satu foto.']);
+
+        $count = 0;
+
+        foreach ($request->file('photos') as $file) {
+            $saleRequest->photos()->create(['image' => ImageStore::store($file, SaleRequestPhoto::FOLDER, 'lead')]);
+            $count++;
         }
 
+        $saleRequest->addNote('foto', "{$count} foto unit ditambahkan.");
+        Audit::log('crm.photos_added', "{$count} foto ditambahkan pada lead {$saleRequest->owner_name}", $saleRequest);
+
+        $this->advance($saleRequest, 'foto unit', ['baru', 'follow up', 'survey']);
+
+        return back()->with('success', "{$count} foto ditambahkan.");
+    }
+
+    public function destroyPhoto(SaleRequest $saleRequest, SaleRequestPhoto $photo)
+    {
+        abort_unless($photo->sale_request_id === $saleRequest->id, 404);
+
+        ImageStore::delete($photo->image, SaleRequestPhoto::FOLDER);
+        $photo->delete();
+        $saleRequest->addNote('foto', 'Satu foto unit dihapus.');
+
+        return back()->with('success', 'Foto dihapus.');
+    }
+
+    /** Buat draf unit dijual dari data lead (foto disalin); harga & foto final diatur di halaman edit unit. */
+    public function publish(SaleRequest $saleRequest)
+    {
         $unit = DB::transaction(function () use ($saleRequest) {
+            $locked = SaleRequest::whereKey($saleRequest->id)->lockForUpdate()->first();
+
+            if ($locked->sale_unit_id) {
+                return null;
+            }
+
             $unit = SaleUnit::create([
-                'title' => 'Dijual '.$saleRequest->apartment_name.($saleRequest->unit_type ? ' '.$saleRequest->unit_type : ''),
-                'apartment_name' => $saleRequest->apartment_name,
-                'location' => $saleRequest->location,
-                'unit_type' => $saleRequest->unit_type,
-                'size' => $saleRequest->size,
-                'price' => $saleRequest->agreed_price ?? $saleRequest->expected_price ?? 0,
-                'description' => $saleRequest->notes,
-                'seller_name' => $saleRequest->owner_name,
-                'seller_phone' => $saleRequest->owner_phone,
+                'title' => 'Dijual '.$locked->apartment_name.($locked->unit_type ? ' '.$locked->unit_type : ''),
+                'apartment_name' => $locked->apartment_name,
+                'location' => $locked->location,
+                'unit_type' => $locked->unit_type,
+                'size' => $locked->size,
+                'price' => $locked->agreed_price ?? $locked->last_offer ?? $locked->expected_price ?? 0,
+                'description' => $locked->notes,
+                'seller_name' => $locked->owner_name,
+                'seller_phone' => $locked->owner_phone,
                 'status' => 'nonaktif', // draf: aktifkan setelah foto & harga dicek
             ]);
 
-            $saleRequest->update(['sale_unit_id' => $unit->id]);
-            $saleRequest->addNote('catatan', "Draf unit dijual dibuat (#{$unit->id}). Lengkapi foto lalu aktifkan.");
+            foreach ($locked->photos as $photo) {
+                $from = SaleRequestPhoto::FOLDER.'/'.$photo->image;
+
+                if (! Storage::disk('public')->exists($from)) {
+                    continue;
+                }
+
+                $name = 'sale_'.now()->timestamp.'_'.Str::lower(Str::random(8)).'.'.pathinfo($photo->image, PATHINFO_EXTENSION);
+                Storage::disk('public')->copy($from, 'sale_units/'.$name);
+                $unit->images()->create(['image' => $name]);
+                $unit->image ??= $name;
+            }
+
+            $unit->save();
+            $locked->update(['sale_unit_id' => $unit->id]);
+            $locked->addNote('publish', "Draf unit dijual dibuat (#{$unit->id}) dengan {$unit->images()->count()} foto. Lengkapi lalu aktifkan.", (float) $unit->price);
 
             return $unit;
         });
 
-        Audit::log('crm.published', "Lead {$saleRequest->owner_name} dipublikasikan sebagai unit dijual #{$unit->id} (draf)", $saleRequest);
-
-        if ($saleRequest->status !== 'listing') {
-            $this->changeStatus($saleRequest, 'listing');
+        if (! $unit) {
+            return back()->with('error', 'Lead ini sudah dipublikasikan sebagai unit dijual.');
         }
 
+        Audit::log('crm.published', "Lead {$saleRequest->owner_name} dipublikasikan sebagai unit dijual #{$unit->id} (draf)", $saleRequest);
+        $this->advance($saleRequest, 'listing', ['baru', 'follow up', 'survey', 'foto unit']);
+
         return redirect()->route('admin.sale-units.edit', $unit)
-            ->with('success', 'Draf unit dibuat dengan status nonaktif. Tambahkan foto, cek harga, lalu aktifkan.');
+            ->with('success', 'Draf unit dibuat dengan status nonaktif. Cek foto & harga, lalu aktifkan.');
     }
 
     /** Catat closing: membuat data komisi penjualan dan menandai unit terjual. */
@@ -128,7 +198,7 @@ class SaleRequestController extends Controller
         $data = $request->validate([
             'deal_price' => 'required|numeric|gt:0',
             'commission_type' => 'required|in:percent,fixed',
-            'commission_value' => 'required|numeric|min:0',
+            'commission_value' => ['required', 'numeric', 'min:0', $request->input('commission_type') === 'percent' ? 'max:100' : 'max:99999999999'],
             'other_cost' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string|max:1000',
         ]);
@@ -150,12 +220,13 @@ class SaleRequestController extends Controller
 
             $saleRequest->update(['agreed_price' => $data['deal_price']]);
             $saleRequest->saleUnit?->update(['status' => 'terjual']);
+            $saleRequest->addNote('closing', 'Closing '.Fmt::rupiah($data['deal_price']).'; komisi '.Fmt::rupiah($commission->commission_amount).'; hak penjual '.Fmt::rupiah($commission->seller_net_amount).". Invoice {$commission->number()}.", (float) $data['deal_price']);
 
             return $commission;
         });
 
         $this->changeStatus($saleRequest, 'closing');
-        Audit::log('sale_commission.created', "Closing lead {$saleRequest->owner_name}: deal ".Fmt::rupiah($data['deal_price']).", komisi ".Fmt::rupiah($commission->commission_amount), $commission);
+        Audit::log('sale_commission.created', 'Closing lead '.$saleRequest->owner_name.': deal '.Fmt::rupiah($data['deal_price']).', komisi '.Fmt::rupiah($commission->commission_amount), $commission);
 
         return redirect()->route('admin.sale-requests.show', $saleRequest)
             ->with('success', 'Closing dicatat. Komisi Like Hotel: '.Fmt::rupiah($commission->commission_amount));
@@ -163,10 +234,22 @@ class SaleRequestController extends Controller
 
     public function destroy(SaleRequest $saleRequest)
     {
+        foreach ($saleRequest->photos as $photo) {
+            ImageStore::delete($photo->image, SaleRequestPhoto::FOLDER);
+        }
+
         Audit::log('crm.deleted', "Lead {$saleRequest->owner_name} ({$saleRequest->apartment_name}) dihapus", $saleRequest);
         $saleRequest->delete();
 
         return redirect()->route('admin.sale-requests.index')->with('success', 'Pengajuan berhasil dihapus.');
+    }
+
+    /** Majukan status hanya jika saat ini masih di salah satu tahap $onlyFrom. */
+    private function advance(SaleRequest $saleRequest, string $to, array $onlyFrom): void
+    {
+        if (in_array($saleRequest->fresh()->status, $onlyFrom, true)) {
+            $this->changeStatus($saleRequest->fresh(), $to);
+        }
     }
 
     private function changeStatus(SaleRequest $saleRequest, string $to): void

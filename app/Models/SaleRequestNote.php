@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SaleRequestNote extends Model
 {
-    /** Jenis entri timeline yang boleh ditulis admin. */
+    /** Jenis entri yang boleh ditulis admin lewat form catatan. */
     public const TYPES = [
         'catatan' => '📝 Catatan',
         'follow up' => '📞 Follow Up',
@@ -16,7 +16,20 @@ class SaleRequestNote extends Model
         'negosiasi' => '🤝 Negosiasi',
     ];
 
-    protected $fillable = ['sale_request_id', 'type', 'body', 'author'];
+    /** Seluruh label timeline, termasuk entri otomatis dari sistem. */
+    public const LABELS = self::TYPES + [
+        'penawaran' => '🤝 Penawaran Pembeli',
+        'foto' => '📷 Foto',
+        'publish' => '📢 Publikasi',
+        'closing' => '💵 Closing',
+    ];
+
+    protected $fillable = ['sale_request_id', 'type', 'body', 'amount', 'author'];
+
+    protected function casts(): array
+    {
+        return ['amount' => 'decimal:2'];
+    }
 
     public function saleRequest(): BelongsTo
     {

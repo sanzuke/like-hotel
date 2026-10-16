@@ -26,8 +26,9 @@
   @endif
 </div>
 
-<div class="stats" style="grid-template-columns:repeat(3,1fr)">
+<div class="stats" style="grid-template-columns:repeat(4,1fr)">
   <div class="stat"><p>Harga Harapan</p><h2>{{ $r->expected_price ? Fmt::rupiah($r->expected_price) : '-' }}</h2></div>
+  <div class="stat"><p>Penawaran Terakhir</p><h2>{{ $r->last_offer ? Fmt::rupiah($r->last_offer) : '-' }}</h2></div>
   <div class="stat"><p>Harga Disepakati</p><h2>{{ $r->agreed_price ? Fmt::rupiah($r->agreed_price) : '-' }}</h2></div>
   <div class="stat"><p>Jadwal Survei</p><h2 style="font-size:20px">{{ $r->survey_at ? $r->survey_at->format('d-m-Y H:i') : '-' }}</h2></div>
 </div>
@@ -51,6 +52,38 @@
         <input type="datetime-local" name="survey_at" value="{{ old('survey_at') }}" required>
         <button class="btn">Simpan Jadwal</button>
       </form>
+    </div>
+
+    <div class="form-box" style="max-width:100%;margin:0 0 20px 0">
+      <h3>🤝 Catat Penawaran Pembeli</h3>
+      <form method="post" action="{{ route('admin.sale-requests.offer', $r) }}">
+        @csrf
+        <label>Nominal penawaran</label>
+        <input type="number" min="1" name="amount" value="{{ old('amount') }}" required>
+        <label>Catatan (opsional)</label>
+        <input name="note" value="{{ old('note') }}" placeholder="Nama pembeli, syarat, dll.">
+        <button class="btn">Catat Penawaran</button>
+      </form>
+    </div>
+
+    <div class="form-box" style="max-width:100%;margin:0 0 20px 0">
+      <h3>📷 Foto Unit ({{ $r->photos->count() }})</h3>
+      <form method="post" action="{{ route('admin.sale-requests.photos', $r) }}" enctype="multipart/form-data">
+        @csrf
+        <input type="file" name="photos[]" accept="image/jpeg,image/png,image/webp" multiple required>
+        <small>Maks. 20 foto (JPG/PNG/WEBP, 4 MB per foto). Foto akan ikut disalin saat dipublikasikan.</small>
+        <br><br><button class="btn">Unggah Foto</button>
+      </form>
+      @if($r->photos->isNotEmpty())
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px">
+          @foreach($r->photos as $p)
+            <div>
+              <a href="{{ $p->url() }}" target="_blank"><img src="{{ $p->url() }}" alt="" style="width:100%;height:90px;object-fit:cover;border-radius:10px"></a>
+              <form method="post" action="{{ route('admin.sale-requests.photos.destroy', [$r, $p]) }}" onsubmit="return confirm('Hapus foto ini?')">@csrf @method('DELETE')<button class="btn-outline" style="width:100%">Hapus</button></form>
+            </div>
+          @endforeach
+        </div>
+      @endif
     </div>
 
     <div class="form-box" style="max-width:100%;margin:0 0 20px 0">
@@ -93,7 +126,7 @@
       <h3>Timeline</h3>
       @forelse($r->timeline as $n)
         <div class="activity-card">
-          <b>{{ $noteTypes[$n->type] ?? ucfirst($n->type) }}</b>
+          <b>{{ $labels[$n->type] ?? ucfirst($n->type) }}</b>
           <small> • {{ $n->author ?? 'Sistem' }} • {{ $n->created_at->format('d-m-Y H:i') }}</small><br>
           {!! nl2br(e($n->body)) !!}
         </div>

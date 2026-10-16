@@ -16,7 +16,7 @@
     </div>
     <div style="text-align:right">
       <div class="invoice-title">INVOICE KOMISI</div>
-      <p><b>KOM-{{ str_pad($r->id, 5, '0', STR_PAD_LEFT) }}</b><br>{{ $r->created_at->format('d/m/Y') }}</p>
+      <p><b>{{ $r->number() }}</b><br>{{ $r->created_at->format('d/m/Y') }}</p>
       <span class="badge">{{ strtoupper($r->status) }}</span>
     </div>
   </div>

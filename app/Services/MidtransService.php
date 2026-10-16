@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Booking;
+use App\Models\MidtransLog;
 use App\Support\Audit;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -87,48 +88,75 @@ class MidtransService
      * Proses notifikasi. Mengembalikan [httpStatus, pesan].
      * Menolak signature kosong/salah, order tak dikenal, dan nominal tak cocok.
      * Idempotent: booking yang sudah lunas tidak diturunkan statusnya.
+     * Setiap notifikasi (diproses, diabaikan, ditolak) dicatat di midtrans_logs.
      */
     public function handleNotification(array $n): array
     {
+        $raw = json_encode($n);
+        $orderId = (string) ($n['order_id'] ?? '');
+        $status = (string) ($n['transaction_status'] ?? 'unknown');
+
+        $log = fn (string $result, ?string $note = null) => MidtransLog::create([
+            'order_id' => $orderId !== '' ? $orderId : null,
+            'transaction_status' => $status,
+            'result' => $result,
+            'note' => $note,
+            'payload' => $raw,
+        ]);
+
         if (! $this->validSignature($n)) {
+            $log('rejected', 'signature tidak valid');
+
             return [403, 'Invalid signature'];
         }
 
-        return DB::transaction(function () use ($n) {
-            $booking = Booking::where('booking_code', $n['order_id'])->lockForUpdate()->first();
+        return DB::transaction(function () use ($n, $orderId, $status, $raw, $log) {
+            $booking = Booking::where('booking_code', $orderId)->lockForUpdate()->first();
 
             if (! $booking) {
+                $log('rejected', 'order tidak ditemukan');
+
                 return [404, 'Order not found'];
             }
 
             if ((int) round((float) $n['gross_amount']) !== (int) round((float) $booking->total_price)) {
+                $log('rejected', 'nominal tidak cocok');
+
                 return [400, 'Amount mismatch'];
             }
 
-            $status = $n['transaction_status'] ?? 'unknown';
             $fraud = $n['fraud_status'] ?? '';
-            $booking->midtrans_response = json_encode($n);
+            $paid = $status === 'settlement' || ($status === 'capture' && $fraud === 'accept');
+            $booking->midtrans_response = $raw;
 
-            if ($status === 'settlement' || ($status === 'capture' && $fraud === 'accept')) {
-                $booking->save();
-                $wasPaid = $booking->isPaid();
-                $booking->markPaid('lunas');
+            if ($paid) {
+                if ($booking->isPaid()) {
+                    $booking->save();
+                    $log('ignored', 'booking sudah lunas');
 
-                if (! $wasPaid) {
-                    Audit::system('booking.paid_midtrans', "Booking {$booking->booking_code} lunas via Midtrans ({$status})", $booking, ['gross_amount' => $n['gross_amount'], 'payment_type' => $n['payment_type'] ?? null]);
+                    return [200, 'OK'];
                 }
+
+                $booking->save();
+                $booking->markPaid('lunas');
+                Audit::system('booking.paid_midtrans', "Booking {$booking->booking_code} lunas via Midtrans ({$status})", $booking, ['gross_amount' => $n['gross_amount'], 'payment_type' => $n['payment_type'] ?? null]);
+                $log('processed');
             } elseif ($booking->isPaid()) {
                 // Sudah lunas: abaikan notifikasi susulan (pending/expire/dll).
                 $booking->save();
+                $log('ignored', 'booking sudah lunas');
             } elseif ($status === 'pending') {
                 $booking->payment_status = 'pending';
                 $booking->save();
+                $log('processed');
             } elseif (in_array($status, ['deny', 'expire', 'cancel'], true)) {
                 $booking->save();
                 $booking->markCancelled('gagal/kedaluwarsa');
                 Audit::system('booking.cancelled_midtrans', "Booking {$booking->booking_code} dibatalkan oleh Midtrans ({$status})", $booking);
+                $log('processed');
             } else {
                 $booking->save();
+                $log('ignored', 'status tidak diproses');
             }
 
             return [200, 'OK'];

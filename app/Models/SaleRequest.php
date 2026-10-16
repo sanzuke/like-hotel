@@ -23,7 +23,7 @@ class SaleRequest extends Model
 
     protected $fillable = [
         'owner_name', 'owner_phone', 'apartment_name', 'location', 'unit_type',
-        'size', 'expected_price', 'agreed_price', 'notes', 'status', 'survey_at', 'sale_unit_id',
+        'size', 'expected_price', 'agreed_price', 'last_offer', 'notes', 'status', 'survey_at', 'sale_unit_id',
     ];
 
     protected function casts(): array
@@ -31,6 +31,7 @@ class SaleRequest extends Model
         return [
             'expected_price' => 'decimal:2',
             'agreed_price' => 'decimal:2',
+            'last_offer' => 'decimal:2',
             'survey_at' => 'datetime',
         ];
     }
@@ -38,6 +39,11 @@ class SaleRequest extends Model
     public function timeline(): HasMany
     {
         return $this->hasMany(SaleRequestNote::class)->latest('id');
+    }
+
+    public function photos(): HasMany
+    {
+        return $this->hasMany(SaleRequestPhoto::class)->orderBy('id');
     }
 
     public function saleUnit(): BelongsTo
@@ -51,11 +57,12 @@ class SaleRequest extends Model
     }
 
     /** Catat entri timeline sekaligus siapa penulisnya. */
-    public function addNote(string $type, string $body): SaleRequestNote
+    public function addNote(string $type, string $body, ?float $amount = null): SaleRequestNote
     {
         return $this->hasMany(SaleRequestNote::class)->create([
             'type' => $type,
             'body' => $body,
+            'amount' => $amount,
             'author' => auth('admin')->user()?->name ?? 'Sistem',
         ]);
     }
