@@ -10,9 +10,39 @@
   <div class="stat"><p>Komisi Like Hotel</p><h2>{{ Fmt::rupiah($stats['komisi']) }}</h2></div>
 </div>
 <br>
+<form id="booking-filter" method="get" action="{{ route('admin.bookings.index') }}"></form>
 <table class="table">
   <tr><th>Kode</th><th>Tamu</th><th>Apartment</th><th>Periode</th><th>Total</th><th>Komisi</th><th>Hak Owner</th><th>Status</th><th>Aksi</th><th>WhatsApp</th></tr>
-  @foreach($bookings as $b)
+  <tr class="filter-row">
+    <td><input form="booking-filter" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Kode / tamu / telepon…" aria-label="Filter booking"></td>
+    <td></td>
+    <td>
+      <select form="booking-filter" name="apartment" onchange="this.form.submit()" aria-label="Filter apartment">
+        <option value="">Semua</option>
+        @foreach($filterApartments as $ap)<option value="{{ $ap->id }}" @selected(($filters['apartment'] ?? '') === (string) $ap->id)>{{ $ap->name }}</option>@endforeach
+      </select>
+    </td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>
+      <select form="booking-filter" name="payment" onchange="this.form.submit()" aria-label="Filter pembayaran">
+        <option value="">Semua pembayaran</option>
+        @foreach($paymentOptions as $v)<option value="{{ $v }}" @selected(($filters['payment'] ?? '') === $v)>{{ $v }}</option>@endforeach
+      </select>
+      <select form="booking-filter" name="booking" onchange="this.form.submit()" aria-label="Filter status booking" style="margin-top:6px">
+        <option value="">Semua status booking</option>
+        @foreach($bookingOptions as $v)<option value="{{ $v }}" @selected(($filters['booking'] ?? '') === $v)>{{ $v }}</option>@endforeach
+      </select>
+    </td>
+    <td class="filter-actions">
+      <button form="booking-filter" class="btn-outline">Cari</button>
+      @if(array_filter($filters))<a href="{{ route('admin.bookings.index') }}" class="filter-reset">Reset</a>@endif
+    </td>
+    <td></td>
+  </tr>
+  @forelse($bookings as $b)
     @php
       $invoice = route('invoice.show', $b->access_token);
       $adminMsg = "BOOKING LIKE HOTEL\nKode: {$b->booking_code}\nTamu: {$b->guest_name}\nWA: {$b->guest_phone}\nApartment: {$b->apartment->name}\nCheck-in: {$b->checkin->toDateString()}\nCheck-out: {$b->checkout->toDateString()}\nTotal: ".Fmt::rupiah($b->total_price)."\nStatus: {$b->payment_status}";
@@ -43,6 +73,13 @@
         <a class="btn-outline" target="_blank" href="{{ Fmt::waLink($b->guest_phone, $guestMsg) }}">Tamu</a>
       </td>
     </tr>
-  @endforeach
+  @empty
+    <tr><td colspan="10" style="text-align:center;color:#6b7280">
+      @if(array_filter($filters))Tidak ada data yang cocok dengan filter. <a href="{{ route('admin.bookings.index') }}" style="color:#087a35;font-weight:700">Reset filter</a>
+      @else Belum ada booking.@endif
+    </td></tr>
+  @endforelse
 </table>
+
+@include('partials.pagination', ['paginator' => $bookings])
 @endsection

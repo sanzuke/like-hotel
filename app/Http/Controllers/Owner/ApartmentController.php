@@ -4,14 +4,34 @@ namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
 use App\Support\ImageStore;
+use App\Support\TableFilter;
 use Illuminate\Http\Request;
 
 class ApartmentController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $owner = auth('owner')->user();
+        $types = $owner->apartments()->whereNotNull('type')->where('type', '!=', '')->distinct()->orderBy('type')->pluck('type')->all();
+
+        $filters = TableFilter::active([
+            'name' => TableFilter::text($request, 'name'),
+            'location' => TableFilter::text($request, 'location'),
+            'type' => TableFilter::enum($request, 'type', $types),
+            'status' => TableFilter::enum($request, 'status', ['aktif', 'nonaktif', 'maintenance']),
+        ]);
+
+        $apartments = $owner->apartments()
+            ->when($filters['name'] ?? null, fn ($q, $v) => $q->where('name', 'like', '%'.$v.'%'))
+            ->when($filters['location'] ?? null, fn ($q, $v) => $q->where('location', 'like', '%'.$v.'%'))
+            ->when($filters['type'] ?? null, fn ($q, $v) => $q->where('type', $v))
+            ->when($filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
+            ->latest('id')->paginate(10)->withQueryString();
+
         return view('owner.apartments', [
-            'apartments' => auth('owner')->user()->apartments()->latest('id')->get(),
+            'apartments' => $apartments,
+            'filters' => $filters,
+            'types' => $types,
         ]);
     }
 

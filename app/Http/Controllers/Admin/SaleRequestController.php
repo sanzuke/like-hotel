@@ -11,6 +11,7 @@ use App\Models\SaleUnit;
 use App\Support\Audit;
 use App\Support\Fmt;
 use App\Support\ImageStore;
+use App\Support\TableFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -22,14 +23,23 @@ class SaleRequestController extends Controller
     /** Tahap awal: boleh otomatis maju saat ada penawaran / foto. */
     private const EARLY = ['baru', 'follow up', 'survey', 'foto unit', 'listing'];
 
-    public function index()
+    public function index(Request $request)
     {
-        $rows = SaleRequest::latest('id')->get();
+        $filters = TableFilter::active([
+            'q' => TableFilter::text($request, 'q'),
+            'unit' => TableFilter::text($request, 'unit'),
+            'status' => TableFilter::enum($request, 'status', array_keys(SaleRequest::STAGES)),
+        ]);
 
         return view('admin.sale-requests', [
-            'rows' => $rows,
+            'rows' => SaleRequest::query()
+                ->when($filters['q'] ?? null, fn ($q, $v) => $q->where(fn ($w) => $w->where('owner_name', 'like', '%'.$v.'%')->orWhere('owner_phone', 'like', '%'.$v.'%')))
+                ->when($filters['unit'] ?? null, fn ($q, $v) => $q->where(fn ($w) => $w->where('apartment_name', 'like', '%'.$v.'%')->orWhere('location', 'like', '%'.$v.'%')))
+                ->when($filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
+                ->latest('id')->paginate(10)->withQueryString(),
+            'filters' => $filters,
             'stages' => SaleRequest::STAGES,
-            'counts' => $rows->countBy('status'),
+            'counts' => SaleRequest::query()->selectRaw('status, count(*) as c')->groupBy('status')->pluck('c', 'status'),
         ]);
     }
 

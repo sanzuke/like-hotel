@@ -1,5 +1,22 @@
+@php $withFilters = $withFilters ?? false; $filters = $filters ?? []; @endphp
+@if($withFilters)<form id="owner-settlement-filter" method="get" action="{{ route('owner.settlements.index') }}"></form>@endif
 <table class="table">
   <tr><th>Tanggal</th><th>Nominal</th><th>Bank</th><th>Rekening</th><th>Status</th><th>Catatan</th></tr>
+  @if($withFilters)
+  <tr class="filter-row">
+    <td></td><td></td><td></td><td></td>
+    <td>
+      <select form="owner-settlement-filter" name="status" onchange="this.form.submit()" aria-label="Filter status">
+        <option value="">Semua</option>
+        @foreach(['pending' => 'Pending', 'approved' => 'Approved', 'paid' => 'Paid', 'rejected' => 'Rejected'] as $v => $l)<option value="{{ $v }}" @selected(($filters['status'] ?? '') === $v)>{{ $l }}</option>@endforeach
+      </select>
+    </td>
+    <td class="filter-actions">
+      <button form="owner-settlement-filter" class="btn-outline">Cari</button>
+      @if(array_filter($filters))<a href="{{ route('owner.settlements.index') }}" class="filter-reset">Reset</a>@endif
+    </td>
+  </tr>
+  @endif
   @forelse($settlements as $s)
     <tr>
       <td>{{ $s->created_at->format('d-m-Y H:i') }}@if($s->paid_at)<br><small>Dibayar: {{ $s->paid_at->format('d-m-Y H:i') }}</small>@endif</td>
@@ -10,6 +27,9 @@
       <td>{{ $s->admin_notes ?? $s->notes ?? '-' }}</td>
     </tr>
   @empty
-    <tr><td colspan="6">Belum ada riwayat pencairan.</td></tr>
+    <tr><td colspan="6">
+      @if($withFilters && array_filter($filters))Tidak ada data yang cocok dengan filter. <a href="{{ route('owner.settlements.index') }}" style="color:#087a35;font-weight:700">Reset filter</a>
+      @else Belum ada riwayat pencairan.@endif
+    </td></tr>
   @endforelse
 </table>

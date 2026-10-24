@@ -6,12 +6,27 @@ use App\Http\Controllers\Controller;
 use App\Models\Owner;
 use App\Support\Audit;
 use Illuminate\Http\Request;
+use App\Support\TableFilter;
 
 class OwnerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('admin.owners', ['owners' => Owner::withCount('apartments')->latest('id')->get()]);
+        $filters = TableFilter::active([
+            'name' => TableFilter::text($request, 'name'),
+            'email' => TableFilter::text($request, 'email'),
+            'status' => TableFilter::enum($request, 'status', ['pending', 'aktif', 'nonaktif']),
+        ]);
+
+        $owners = Owner::withCount('apartments')
+            ->when($filters['name'] ?? null, fn ($q, $v) => $q->where('name', 'like', '%'.$v.'%'))
+            ->when($filters['email'] ?? null, fn ($q, $v) => $q->where('email', 'like', '%'.$v.'%'))
+            ->when($filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
+            ->latest('id')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.owners', ['owners' => $owners, 'filters' => $filters]);
     }
 
     public function updateStatus(Request $request, Owner $owner)

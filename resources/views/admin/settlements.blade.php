@@ -30,8 +30,32 @@
 <br>
 
 <h2>Riwayat Pengajuan / Pencairan</h2>
+<form id="settlement-filter" method="get" action="{{ route('admin.settlements.index') }}"></form>
 <table class="table">
   <tr><th>Owner</th><th>Nominal</th><th>Bank</th><th>Rekening</th><th>Status</th><th>Tanggal</th><th>Aksi</th><th>WA</th></tr>
+  <tr class="filter-row">
+    <td>
+      <select form="settlement-filter" name="owner" onchange="this.form.submit()" aria-label="Filter owner">
+        <option value="">Semua</option>
+        @foreach($filterOwners as $o)<option value="{{ $o->id }}" @selected(($filters['owner'] ?? '') === (string) $o->id)>{{ $o->name }}</option>@endforeach
+      </select>
+    </td>
+    <td></td>
+    <td><input form="settlement-filter" name="bank" value="{{ $filters['bank'] ?? '' }}" placeholder="Bank / rekening…" aria-label="Filter bank"></td>
+    <td></td>
+    <td>
+      <select form="settlement-filter" name="status" onchange="this.form.submit()" aria-label="Filter status">
+        <option value="">Semua</option>
+        @foreach(['pending' => 'Pending', 'approved' => 'Approved', 'paid' => 'Paid', 'rejected' => 'Rejected'] as $v => $l)<option value="{{ $v }}" @selected(($filters['status'] ?? '') === $v)>{{ $l }}</option>@endforeach
+      </select>
+    </td>
+    <td></td>
+    <td class="filter-actions">
+      <button form="settlement-filter" class="btn-outline">Cari</button>
+      @if($filters)<a href="{{ route('admin.settlements.index') }}" class="filter-reset">Reset</a>@endif
+    </td>
+    <td></td>
+  </tr>
   @foreach($rows as $r)
     @php $msg = "PENCAIRAN DANA LIKE HOTEL\nOwner: {$r->owner->name}\nNominal: ".Fmt::rupiah($r->amount)."\nStatus: {$r->status}\nBank: {$r->bank_name}\nRekening: {$r->bank_account_number}"; @endphp
     <tr>
@@ -58,5 +82,13 @@
       <td><a class="btn-outline" target="_blank" href="{{ Fmt::waLink($r->owner->phone, $msg) }}">Chat Owner</a></td>
     </tr>
   @endforeach
+  @if($rows->isEmpty())
+    <tr><td colspan="8" style="text-align:center;color:#6b7280">
+      @if($filters)Tidak ada data yang cocok dengan filter. <a href="{{ route('admin.settlements.index') }}" style="color:#087a35;font-weight:700">Reset filter</a>
+      @else Belum ada pengajuan pencairan.@endif
+    </td></tr>
+  @endif
 </table>
+
+@include('partials.pagination', ['paginator' => $rows])
 @endsection

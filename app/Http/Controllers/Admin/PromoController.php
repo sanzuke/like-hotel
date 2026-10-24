@@ -5,13 +5,28 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Promo;
 use App\Support\Audit;
+use App\Support\TableFilter;
 use Illuminate\Http\Request;
 
 class PromoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('admin.promos', ['promos' => Promo::latest('id')->get()]);
+        $filters = TableFilter::active([
+            'code' => TableFilter::text($request, 'code', 50),
+            'type' => TableFilter::enum($request, 'type', ['percent', 'fixed']),
+            'status' => TableFilter::enum($request, 'status', ['aktif', 'nonaktif']),
+        ]);
+
+        $promos = Promo::query()
+            ->when($filters['code'] ?? null, fn ($q, $v) => $q->where('code', 'like', '%'.$v.'%'))
+            ->when($filters['type'] ?? null, fn ($q, $v) => $q->where('type', $v))
+            ->when($filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
+            ->latest('id')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.promos', ['promos' => $promos, 'filters' => $filters]);
     }
 
     public function store(Request $request)

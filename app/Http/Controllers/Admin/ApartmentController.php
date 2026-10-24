@@ -13,11 +13,37 @@ class ApartmentController extends Controller
 {
     private const DIR = 'apartments';
 
-    public function index()
+    public function index(Request $request)
     {
+        // Filter dari query string: nilai tidak valid (termasuk array) diabaikan, bukan error,
+        // agar tidak memicu popup tambah data atau 500.
+        $str = fn (string $key, int $max) => is_string($v = $request->query($key)) ? mb_substr(trim($v), 0, $max) : '';
+        $owner = $str('owner', 20);
+        $status = $str('status', 20);
+        $filters = array_filter([
+            'name' => $str('name', 100),
+            'location' => $str('location', 100),
+            'owner' => ($owner === 'none' || ctype_digit($owner)) ? $owner : '',
+            'type' => $str('type', 80),
+            'status' => in_array($status, ['aktif', 'nonaktif', 'maintenance'], true) ? $status : '',
+        ], fn ($v) => $v !== '');
+
+        $apartments = Apartment::query()
+            ->when($filters['name'] ?? null, fn ($q, $v) => $q->where('name', 'like', '%'.$v.'%'))
+            ->when($filters['location'] ?? null, fn ($q, $v) => $q->where('location', 'like', '%'.$v.'%'))
+            ->when($filters['owner'] ?? null, fn ($q, $v) => $v === 'none' ? $q->whereNull('owner_id') : $q->where('owner_id', (int) $v))
+            ->when($filters['type'] ?? null, fn ($q, $v) => $q->where('type', $v))
+            ->when($filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
+            ->latest('id')
+            ->paginate(10)
+            ->withQueryString();
+
         return view('admin.apartments.index', [
-            'apartments' => Apartment::latest('id')->get(),
+            'apartments' => $apartments,
+            'filters' => $filters,
             'owners' => Owner::where('status', 'aktif')->orderBy('name')->get(),
+            'filterOwners' => Owner::orderBy('name')->get(['id', 'name']),
+            'types' => Apartment::query()->whereNotNull('type')->distinct()->orderBy('type')->pluck('type'),
         ]);
     }
 

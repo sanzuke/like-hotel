@@ -18,7 +18,7 @@ class Fmt
             str_contains($s, 'lunas'), $s === 'paid', $s === 'closing', $s === 'aktif' => '#087a35',
             $s === 'approved' => '#1d4ed8',
             str_contains($s, 'pending'), str_contains($s, 'menunggu'), str_contains($s, 'snap') => '#b45309',
-            str_contains($s, 'batal'), str_contains($s, 'gagal'), $s === 'rejected' => '#991b1b',
+            str_contains($s, 'batal'), str_contains($s, 'gagal'), str_contains($s, 'kedaluwarsa'), $s === 'rejected' => '#991b1b',
             default => '#6b7280',
         };
     }

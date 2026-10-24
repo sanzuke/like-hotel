@@ -5,16 +5,20 @@ namespace App\Http\Controllers\Owner;
 use App\Http\Controllers\Controller;
 use App\Models\Owner;
 use App\Support\Audit;
+use App\Support\TableFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class SettlementController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $owner = auth('owner')->user();
         $earnings = $owner->totalEarnings();
         $requested = $owner->totalRequested();
+        $filters = TableFilter::active([
+            'status' => TableFilter::enum($request, 'status', ['pending', 'approved', 'paid', 'rejected']),
+        ]);
 
         return view('owner.settlements', [
             'owner' => $owner,
@@ -22,7 +26,10 @@ class SettlementController extends Controller
             'requested' => $requested,
             'paid' => $owner->totalPaid(),
             'available' => max(0, $earnings - $requested),
-            'settlements' => $owner->settlements()->latest('id')->get(),
+            'settlements' => $owner->settlements()
+                ->when($filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
+                ->latest('id')->paginate(10)->withQueryString(),
+            'filters' => $filters,
         ]);
     }
 

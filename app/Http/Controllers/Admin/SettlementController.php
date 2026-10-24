@@ -6,12 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Models\Owner;
 use App\Models\Settlement;
 use App\Support\Audit;
+use App\Support\TableFilter;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class SettlementController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $filters = TableFilter::active([
+            'owner' => TableFilter::id($request, 'owner'),
+            'bank' => TableFilter::text($request, 'bank'),
+            'status' => TableFilter::enum($request, 'status', ['pending', 'approved', 'paid', 'rejected']),
+        ]);
+
         return view('admin.settlements', [
             'owners' => Owner::orderBy('name')->get()->each(function (Owner $o) {
                 $o->earnings = $o->totalEarnings();
@@ -19,7 +27,13 @@ class SettlementController extends Controller
                 $o->paid = $o->totalPaid();
                 $o->balance = max(0, $o->earnings - $o->requested);
             })->sortByDesc('earnings'),
-            'rows' => Settlement::with('owner')->latest('id')->get(),
+            'rows' => Settlement::with('owner')
+                ->when($filters['owner'] ?? null, fn ($q, $v) => $q->where('owner_id', $v))
+                ->when($filters['bank'] ?? null, fn ($q, $v) => $q->where(fn ($w) => $w->where('bank_name', 'like', '%'.$v.'%')->orWhere('bank_account_name', 'like', '%'.$v.'%')->orWhere('bank_account_number', 'like', '%'.$v.'%')))
+                ->when($filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
+                ->latest('id')->paginate(10)->withQueryString(),
+            'filters' => $filters,
+            'filterOwners' => Owner::orderBy('name')->get(['id', 'name']),
         ]);
     }
 

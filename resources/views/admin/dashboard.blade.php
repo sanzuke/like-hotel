@@ -46,25 +46,83 @@
 </div>
 <br>
 
-<h2>Aktivitas Terbaru</h2>
-<div class="stats" style="align-items:flex-start">
-  <div class="stat">
-    <h3>📅 Booking Terbaru</h3>
-    @forelse($bookings as $b)
-      <div class="activity-card"><b>{{ $b->booking_code }}</b><br>{{ $b->apartment->name }}<br><small>{{ $b->created_at->format('d-m-Y H:i') }}</small><br><b style="color:#087a35">{{ Fmt::rupiah($b->total_price) }}</b></div>
-    @empty <p>Belum ada booking.</p> @endforelse
-  </div>
-  <div class="stat">
-    <h3>🤝 Leads Titip Jual</h3>
-    @forelse($leads as $l)
-      <div class="activity-card"><b>{{ $l->owner_name }}</b><br>{{ $l->apartment_name }}<br><small>{{ $l->status }} • {{ $l->created_at->format('d-m-Y H:i') }}</small></div>
-    @empty <p>Belum ada leads.</p> @endforelse
-  </div>
-  <div class="stat">
-    <h3>🏷 Unit Dijual Terbaru</h3>
-    @forelse($saleUnits as $s)
-      <div class="activity-card"><b>{{ $s->title }}</b><br>{{ $s->apartment_name }}<br><small>{{ $s->status }}</small><br><b style="color:#087a35">{{ Fmt::rupiah($s->price) }}</b></div>
-    @empty <p>Belum ada unit dijual.</p> @endforelse
-  </div>
+<div class="section-head">
+  <h2>Aktivitas Terbaru</h2>
+  <span class="muted">5 data terakhir dari tiap modul</span>
+</div>
+<div class="activity-grid">
+  <section class="activity-panel">
+    <header class="activity-head">
+      <h3>Booking Terbaru</h3>
+      <a href="{{ route('admin.bookings.index') }}">Lihat semua →</a>
+    </header>
+    <ul class="activity-list">
+      @forelse($bookings as $b)
+        <li>
+          <span class="avatar-sq">📅</span>
+          <div class="activity-main">
+            <div class="activity-title">{{ $b->apartment->name }}</div>
+            <div class="activity-sub">{{ $b->booking_code }} · {{ $b->guest_name }}</div>
+            <div class="activity-time" title="{{ $b->created_at->format('d M Y H:i') }}">{{ $b->created_at->diffForHumans() }}</div>
+          </div>
+          <div class="activity-side">
+            <div class="activity-amount">{{ Fmt::rupiah($b->total_price) }}</div>
+            <span class="pill" style="--c:{{ Fmt::statusColor($b->payment_status) }}">{{ $b->payment_status }}</span>
+          </div>
+        </li>
+      @empty
+        <li class="activity-empty">Belum ada booking.</li>
+      @endforelse
+    </ul>
+  </section>
+
+  <section class="activity-panel">
+    <header class="activity-head">
+      <h3>Leads Titip Jual</h3>
+      <a href="{{ route('admin.sale-requests.index') }}">Lihat semua →</a>
+    </header>
+    <ul class="activity-list">
+      @forelse($leads as $l)
+        <li>
+          <span class="avatar-sq">🤝</span>
+          <div class="activity-main">
+            <div class="activity-title">{{ $l->apartment_name }}</div>
+            <div class="activity-sub">{{ $l->owner_name }}</div>
+            <div class="activity-time" title="{{ $l->created_at->format('d M Y H:i') }}">{{ $l->created_at->diffForHumans() }}</div>
+          </div>
+          <div class="activity-side">
+            <span class="pill" style="--c:{{ Fmt::statusColor($l->status) }}">{{ ucfirst($l->status) }}</span>
+          </div>
+        </li>
+      @empty
+        <li class="activity-empty">Belum ada leads.</li>
+      @endforelse
+    </ul>
+  </section>
+
+  <section class="activity-panel">
+    <header class="activity-head">
+      <h3>Unit Dijual Terbaru</h3>
+      <a href="{{ route('admin.sale-units.index') }}">Lihat semua →</a>
+    </header>
+    <ul class="activity-list">
+      @forelse($saleUnits as $s)
+        <li>
+          <span class="avatar-sq">🏷</span>
+          <div class="activity-main">
+            <div class="activity-title">{{ $s->title }}</div>
+            <div class="activity-sub">{{ $s->apartment_name }}</div>
+            <div class="activity-time" title="{{ $s->created_at->format('d M Y H:i') }}">{{ $s->created_at->diffForHumans() }}</div>
+          </div>
+          <div class="activity-side">
+            <div class="activity-amount">{{ Fmt::rupiah($s->price) }}</div>
+            <span class="pill" style="--c:{{ Fmt::statusColor($s->status) }}">{{ ucfirst($s->status) }}</span>
+          </div>
+        </li>
+      @empty
+        <li class="activity-empty">Belum ada unit dijual.</li>
+      @endforelse
+    </ul>
+  </section>
 </div>
 @endsection

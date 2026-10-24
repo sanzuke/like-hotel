@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SaleUnit;
 use App\Models\SaleUnitImage;
 use App\Support\Audit;
+use App\Support\TableFilter;
 use App\Support\ImageStore;
 use Illuminate\Http\Request;
 
@@ -13,9 +14,30 @@ class SaleUnitController extends Controller
 {
     private const DIR = 'sale_units';
 
-    public function index()
+    public function index(Request $request)
     {
-        return view('admin.sale-units.index', ['rows' => SaleUnit::latest('id')->get()]);
+        $filters = TableFilter::active([
+            'q' => TableFilter::text($request, 'q', 100),
+            'apartment' => TableFilter::text($request, 'apartment', 100),
+            'seller' => TableFilter::text($request, 'seller', 100),
+            'status' => TableFilter::enum($request, 'status', ['aktif', 'terjual', 'nonaktif']),
+        ]);
+
+        $rows = SaleUnit::query()
+            ->when($filters['q'] ?? null, fn ($q, $v) => $q->where(fn ($w) => $w
+                ->where('title', 'like', '%'.$v.'%')
+                ->orWhere('apartment_name', 'like', '%'.$v.'%')
+                ->orWhere('location', 'like', '%'.$v.'%')))
+            ->when($filters['apartment'] ?? null, fn ($q, $v) => $q->where('apartment_name', 'like', '%'.$v.'%'))
+            ->when($filters['seller'] ?? null, fn ($q, $v) => $q->where(fn ($w) => $w
+                ->where('seller_name', 'like', '%'.$v.'%')
+                ->orWhere('seller_phone', 'like', '%'.$v.'%')))
+            ->when($filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
+            ->latest('id')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('admin.sale-units.index', ['rows' => $rows, 'filters' => $filters]);
     }
 
     public function store(Request $request)

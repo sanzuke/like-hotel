@@ -43,10 +43,6 @@
     <tr><td colspan="5">Belum ada catatan.</td></tr>
   @endforelse
 </table>
-<br>
-<div style="display:flex;gap:10px;align-items:center">
-  @if($logs->previousPageUrl())<a class="btn-outline" href="{{ $logs->previousPageUrl() }}">← Sebelumnya</a>@endif
-  <span>Halaman {{ $logs->currentPage() }} dari {{ $logs->lastPage() }} ({{ $logs->total() }} catatan)</span>
-  @if($logs->nextPageUrl())<a class="btn-outline" href="{{ $logs->nextPageUrl() }}">Berikutnya →</a>@endif
-</div>
+
+@include('partials.pagination', ['paginator' => $logs])
 @endsection

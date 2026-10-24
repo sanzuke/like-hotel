@@ -5,19 +5,36 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\SaleCommission;
 use App\Support\Audit;
+use App\Support\TableFilter;
 use Illuminate\Http\Request;
 
 class SaleCommissionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $rows = SaleCommission::latest('id')->get();
+        $statuses = SaleCommission::query()->whereNotNull('status')->distinct()->orderBy('status')->pluck('status')->all();
+        $filters = TableFilter::active([
+            'seller' => TableFilter::text($request, 'seller', 100),
+            'apartment' => TableFilter::text($request, 'apartment', 100),
+            'status' => TableFilter::enum($request, 'status', $statuses),
+        ]);
+
+        $rows = SaleCommission::query()
+            ->when($filters['seller'] ?? null, fn ($q, $v) => $q->where('seller_name', 'like', '%'.$v.'%'))
+            ->when($filters['apartment'] ?? null, fn ($q, $v) => $q->where('apartment_name', 'like', '%'.$v.'%'))
+            ->when($filters['status'] ?? null, fn ($q, $v) => $q->where('status', $v))
+            ->latest('id')
+            ->paginate(10)
+            ->withQueryString();
 
         return view('admin.sale-commissions.index', [
             'rows' => $rows,
-            'totalDeal' => $rows->sum('deal_price'),
-            'totalCommission' => $rows->sum('commission_amount'),
-            'totalNet' => $rows->sum('seller_net_amount'),
+            'filters' => $filters,
+            'statuses' => $statuses,
+            // Total dihitung di database agar mencakup seluruh data, bukan hanya halaman yang tampil.
+            'totalDeal' => SaleCommission::sum('deal_price'),
+            'totalCommission' => SaleCommission::sum('commission_amount'),
+            'totalNet' => SaleCommission::sum('seller_net_amount'),
         ]);
     }
 
