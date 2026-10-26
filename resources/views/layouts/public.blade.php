@@ -44,6 +44,7 @@
         <a href="{{ route($route) }}" @class(['on' => request()->routeIs($pattern)])>{{ $label }}</a>
       @endforeach
       <a href="{{ $wa }}" class="wa-pill" target="_blank" rel="noopener"><i class="ms">chat</i> Chat WA</a>
+      <a href="{{ route('owner.login') }}" class="btn-outline">Login</a>
     </nav>
     <a href="{{ $wa }}" class="wa-pill mobile-wa" target="_blank" rel="noopener" style="display:none" aria-label="Chat WhatsApp"><i class="ms">chat</i> CS</a>
   </div>
