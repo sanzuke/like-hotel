@@ -33,7 +33,7 @@ class OwnerAuthController extends Controller
 
         $owner = Owner::where('email', $data['email'])->first();
 
-        if ($owner && $owner->status === 'pending' && password_verify($data['password'], $owner->password)) {
+        if ($owner && $owner->status === 'pending' && $owner->password && password_verify($data['password'], $owner->password)) {
             throw ValidationException::withMessages(['email' => 'Akun Anda masih menunggu persetujuan admin.']);
         }
 

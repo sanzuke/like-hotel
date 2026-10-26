@@ -25,7 +25,7 @@
   @forelse($owners as $o)
     <tr>
       <td>{{ $o->name }}</td>
-      <td>{{ $o->phone }}</td>
+      <td>{{ $o->phone ?: '-' }}</td>
       <td>{{ $o->email }}</td>
       <td><b style="color:{{ \App\Support\Fmt::statusColor($o->status) }}">{{ $o->status }}</b></td>
       <td>{{ $o->apartments_count }}</td>
