@@ -43,9 +43,7 @@
       @foreach($navItems as [$route, $pattern, $label])
         <a href="{{ route($route) }}" @class(['on' => request()->routeIs($pattern)])>{{ $label }}</a>
       @endforeach
-      <a href="{{ route('owner.login') }}">Owner</a>
       <a href="{{ $wa }}" class="wa-pill" target="_blank" rel="noopener"><i class="ms">chat</i> Chat WA</a>
-      <a href="{{ route('admin.login') }}" class="btn-outline">Admin</a>
     </nav>
     <a href="{{ $wa }}" class="wa-pill mobile-wa" target="_blank" rel="noopener" style="display:none" aria-label="Chat WhatsApp"><i class="ms">chat</i> CS</a>
   </div>
