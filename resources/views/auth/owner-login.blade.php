@@ -14,5 +14,6 @@
     <button class="btn">Login</button>
     <a class="btn-outline" href="{{ route('owner.register') }}">Daftar Owner</a>
   </form>
+  @include('auth.partials.google-button', ['label' => 'Masuk dengan Google'])
 </div>
 @endsection

@@ -245,3 +245,9 @@ body.site .btn-full{display:block;width:100%;margin-top:10px}
   .pd-bar .btn{padding:12px 26px}
   body.site{padding-bottom:130px}
 }
+
+/* ===== Login Google ===== */
+.or-sep{display:flex;align-items:center;gap:12px;margin:18px 0 14px;color:#94a3b8;font-size:12px;font-weight:700;text-transform:uppercase}
+.or-sep::before,.or-sep::after{content:"";flex:1;height:1px;background:var(--line)}
+.btn-google{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px 16px;font-weight:700;color:var(--ink);transition:.15s}
+.btn-google:hover{background:#f8fafc;border-color:#cbd5e1;box-shadow:0 2px 10px rgba(19,27,46,.08)}

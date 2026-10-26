@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Auth\OwnerAuthController;
+use App\Http\Controllers\Auth\OwnerGoogleController;
 use App\Http\Controllers\Owner;
 use App\Http\Controllers\Site;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +50,8 @@ Route::prefix('owner')->name('owner.')->group(function () {
         Route::post('/login', [OwnerAuthController::class, 'login'])->name('login.submit');
         Route::get('/register', [OwnerAuthController::class, 'showRegister'])->name('register');
         Route::post('/register', [OwnerAuthController::class, 'register'])->middleware('throttle:5,1')->name('register.submit');
+        Route::get('/auth/google', [OwnerGoogleController::class, 'redirect'])->middleware('throttle:10,1')->name('google.redirect');
+        Route::get('/auth/google/callback', [OwnerGoogleController::class, 'callback'])->middleware('throttle:10,1')->name('google.callback');
     });
 
     Route::middleware('auth:owner')->group(function () {

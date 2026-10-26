@@ -9,7 +9,7 @@ class Owner extends Authenticatable
 {
     public const SETTLEMENT_ACTIVE = ['pending', 'approved', 'paid'];
 
-    protected $fillable = ['name', 'phone', 'email', 'password', 'status'];
+    protected $fillable = ['name', 'phone', 'email', 'google_id', 'password', 'status'];
 
     protected $hidden = ['password', 'remember_token'];
 
