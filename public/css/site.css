@@ -169,3 +169,17 @@ body.site{overflow-x:hidden}
 body.site .search-card .search.search-adv{grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) auto}
 body.site .search-card .search.search-adv input[name=q]{grid-column:auto}
 @media(max-width:900px){body.site .search-card .search.search-adv{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}body.site .search-card .search.search-adv input[name=q]{grid-column:1/-1}body.site .search-card .search.search-adv>*{grid-column:auto}body.site .search-card .search.search-adv .btn,body.site .search-card .search.search-adv .btn-outline{grid-column:1/-1;text-align:center}}
+body.site label{font-weight:700;font-size:13px;color:var(--ink-2)}
+body.site .invoice{border-radius:20px}
+body.site .invoice-title{color:var(--primary)}
+body.site .invoice-head{border-bottom-color:var(--primary)}
+body.site .table th{background:#f0fdf4;color:var(--primary-d)}
+body.site .btn-full{display:block;width:100%;margin-top:10px}
+@media(max-width:900px){
+  body.site .invoice{margin:12px;padding:18px}
+  body.site .invoice .table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  body.site .invoice-head{flex-direction:column;gap:10px}
+  body.site .invoice-title{font-size:26px}
+  body.site .row{grid-template-columns:1fr}
+}
+@media print{.bottom-nav,.site-top,.site-head{display:none!important}body.site{padding-bottom:0}}
