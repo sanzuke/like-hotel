@@ -1,20 +1,29 @@
+@php
+    $facs = collect(preg_split('/[,;\n]+/', (string) $a->facilities))->map(fn ($f) => trim($f))->filter()->take(4);
+    $href = route('apartments.show', $a).(request()->filled('checkin') ? '?'.http_build_query(request()->only('checkin','checkout')) : '');
+@endphp
 <div class="card apartment-card">
-  @if($a->image)
-    <img src="{{ asset('storage/apartments/'.$a->image) }}" class="card-photo" alt="{{ $a->name }}">
-  @else
-    <div class="card-img card-img-modern"><span>LIKE HOTEL</span><b>Apartment</b></div>
-  @endif
+  <div class="card-media">
+    @if($a->image)
+      <img src="{{ asset('storage/apartments/'.$a->image) }}" class="card-photo" alt="{{ $a->name }}" loading="lazy">
+    @else
+      <div class="card-img card-img-modern"><span>LIKE HOTEL</span><b>Apartment</b></div>
+    @endif
+    <span class="tag">{{ $a->type }}</span>
+    <span class="rate"><i class="ms">star</i> 4.8</span>
+  </div>
   <div class="card-body">
-    <div class="rating">⭐ 4.8 • Unit aktif</div>
     <h3>{{ $a->name }}</h3>
-    <p class="muted">📍 {{ $a->location }} • {{ $a->type }}</p>
-    <p class="facilities">🏠 {{ $a->facilities }}</p>
+    <p class="loc"><i class="ms">location_on</i> {{ $a->location }}</p>
+    @if($facs->isNotEmpty())
+      <div class="fac">@foreach($facs as $f)<span>{{ $f }}</span>@endforeach</div>
+    @endif
     <div class="card-bottom">
       <div>
         <small>Mulai dari</small>
         <p class="price">{{ \App\Support\Fmt::rupiah($a->price_per_night) }}<span>/malam</span></p>
       </div>
-      <a class="btn" href="{{ route('apartments.show', $a).(request()->filled('checkin') ? '?'.http_build_query(request()->only('checkin','checkout')) : '') }}">Detail</a>
+      <a class="btn" href="{{ $href }}">Detail <i class="ms">chevron_right</i></a>
     </div>
   </div>
 </div>
