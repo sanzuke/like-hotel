@@ -32,11 +32,20 @@
   <div class="row">
     <div>
       <h3>Data Tamu</h3>
-      <p>Nama: <b>{{ $b->guest_name }}</b><br>WhatsApp: {{ $b->guest_phone }}<br>Email: {{ $b->guest_email }}</p>
+      <dl class="inv-dl">
+        <div><dt>Nama</dt><dd><b>{{ $b->guest_name }}</b></dd></div>
+        <div><dt>WhatsApp</dt><dd>{{ $b->guest_phone }}</dd></div>
+        <div><dt>Email</dt><dd>{{ $b->guest_email }}</dd></div>
+      </dl>
     </div>
     <div>
       <h3>Data Booking</h3>
-      <p>Kode Booking: <b>{{ $b->booking_code }}</b><br>Check-in: {{ $b->checkin_label }}<br>Check-out: {{ $b->checkout_label }}<br>Jumlah malam: {{ $nights }} malam</p>
+      <dl class="inv-dl">
+        <div><dt>Kode Booking</dt><dd><b>{{ $b->booking_code }}</b></dd></div>
+        <div><dt>Check-in</dt><dd>{{ $b->checkin_label }}</dd></div>
+        <div><dt>Check-out</dt><dd>{{ $b->checkout_label }}</dd></div>
+        <div><dt>Jumlah malam</dt><dd>{{ $nights }} malam</dd></div>
+      </dl>
     </div>
   </div>
 

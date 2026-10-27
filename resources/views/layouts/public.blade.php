@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=block">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block">
 <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=20">
-<link rel="stylesheet" href="{{ asset('css/site.css') }}?v=12">
+<link rel="stylesheet" href="{{ asset('css/site.css') }}?v=13">
 @stack('head')
 </head>
 <body class="site">
