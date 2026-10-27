@@ -322,3 +322,8 @@ body.site .btn-full{display:block;width:100%;margin-top:10px}
   .sd-specs{grid-template-columns:1fr 1fr}
   .sl-cta{padding:20px;border-radius:20px}
 }
+
+/* Foto tinggi/panjang tidak boleh melebarkan kartu: kunci rasio 16:10 dan potong dengan cover */
+.sl-media{overflow:hidden;height:auto}
+.sl-media img,.sl-media .sl-ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sl-body h3 a{color:inherit;text-decoration:none}
