@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Owner;
+use App\Rules\Turnstile;
 use App\Support\Audit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,7 +22,11 @@ class OwnerAuthController extends Controller
 
     public function login(Request $request): RedirectResponse
     {
-        $data = $request->validate(['email' => 'required|email', 'password' => 'required|string']);
+        $data = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string',
+            'cf-turnstile-response' => [new Turnstile],
+        ]);
 
         $throttleKey = Str::lower($data['email']).'|'.$request->ip();
 
@@ -63,10 +68,11 @@ class OwnerAuthController extends Controller
             'phone' => 'required|string|max:50',
             'email' => 'required|email|max:150|unique:owners,email',
             'password' => 'required|string|min:8|confirmed',
+            'cf-turnstile-response' => [new Turnstile],
         ], ['email.unique' => 'Email sudah terdaftar. Silakan login.']);
 
         // Akun baru menunggu persetujuan admin (status default: pending).
-        $owner = Owner::create($data);
+        $owner = Owner::create(collect($data)->except('cf-turnstile-response')->all());
         Audit::log('owner.registered', "Owner baru mendaftar: {$owner->name} ({$owner->email})", $owner, [], ['type' => 'guest', 'name' => $owner->name]);
 
         return redirect()->route('owner.login')

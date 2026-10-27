@@ -16,6 +16,7 @@
     <label>Luas</label><input name="size" value="{{ old('size') }}" placeholder="Contoh: 34 m2">
     <label>Harga yang Diharapkan</label><input type="number" min="0" name="expected_price" value="{{ old('expected_price') }}">
     <label>Catatan</label><textarea name="notes">{{ old('notes') }}</textarea>
+    @include('partials.turnstile')
     <button class="btn">Kirim Pengajuan</button>
   </form>
 </div>

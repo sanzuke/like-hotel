@@ -10,6 +10,7 @@
     <input name="login" value="{{ old('login') }}" autocomplete="username" required>
     <label>Password</label>
     <input type="password" name="password" autocomplete="current-password" required>
+    @include('partials.turnstile')
     <button class="btn">Login</button>
   </form>
 </div>
