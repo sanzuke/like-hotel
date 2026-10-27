@@ -403,3 +403,96 @@ body.site .apartments-hero .search-card .search{max-width:none}
 body.site .invoice .row{gap:40px}
 body.site .invoice h3{margin:0 0 4px}
 @media(max-width:900px){.inv-dl>div{grid-template-columns:104px 1fr}}
+
+/* =====================================================================
+   TIPOGRAFI — satu skala untuk seluruh halaman publik (acuan: Stitch)
+   display 44/54 · h1 32/40 · h2 22/28 · h3 18/24 · body-lg 16/26 ·
+   body-md 14/22 · body-sm 12/18 · label 13/18 · tag 11/14
+   Bobot: 400 teks, 500 meta, 600 label/menu, 700 judul & tombol, 800 hanya harga/display.
+   ===================================================================== */
+body.site{font-size:16px;line-height:1.6;font-weight:400}
+body.site button,body.site input,body.site select,body.site textarea{font:inherit;font-size:14px;line-height:1.4}
+body.site h1,body.site h2,body.site h3,body.site h4{font-family:inherit;color:var(--ink);margin-top:0}
+
+/* Judul */
+body.site h1{font-size:32px;line-height:40px;font-weight:700;letter-spacing:-.02em}
+body.site h2{font-size:22px;line-height:28px;font-weight:700;letter-spacing:-.01em}
+body.site h3{font-size:18px;line-height:24px;font-weight:700}
+body.site h4{font-size:14px;line-height:20px;font-weight:700}
+body.site .hero-modern h1{font-size:44px;line-height:54px;font-weight:800}
+body.site .pd-card h2,body.site .bs-sum-head h2{font-size:18px;line-height:24px}
+body.site .sl-cta h3,body.site .owner-banner h3{font-size:22px;line-height:28px}
+body.site .features h3{font-size:16px;line-height:22px}
+body.site .sl-body h3,body.site .card-body h3{font-size:18px;line-height:24px;font-weight:700}
+body.site .sl-hero h1,body.site .apartments-hero h1,body.site .bs-banner h1{font-size:32px;line-height:40px;font-weight:700}
+body.site .pd-title h1{font-size:32px;line-height:40px}
+
+/* Teks isi */
+body.site p{font-size:16px;line-height:26px}
+body.site .lead,body.site .sl-hero p,body.site .apartments-hero p,body.site .section-subtitle{font-size:16px;line-height:26px;font-weight:400;color:var(--ink-2)}
+body.site .pd-desc{font-size:16px;line-height:28px}
+body.site .muted,body.site .features p,body.site .step p,body.site .pd-trust p,body.site .sd-steps p,body.site .sl-cta p,body.site .owner-banner p,
+body.site .loc,body.site .pd-loc,body.site .bs-banner p,body.site .hero-card p{font-size:14px;line-height:22px}
+body.site .pd-loc{font-weight:500}
+body.site .loc{font-weight:500}
+body.site small{font-size:12px;line-height:18px;font-weight:500}
+
+/* Label, chip, tag */
+body.site label{font-size:13px;line-height:18px;font-weight:600}
+body.site .badge{font-size:12px;line-height:16px;font-weight:700}
+body.site .fac span,body.site .pd-specs b,body.site .pd-facs span,body.site .hero-points span,body.site .sl-trust span,body.site .chips a{font-size:13px;line-height:18px;font-weight:600}
+body.site .pd-specs small,body.site .sl-specs small,body.site .sd-specs small,body.site .sl-foot small,body.site .card-bottom small{font-size:12px;line-height:16px}
+body.site .sl-specs b,body.site .sd-specs b{font-size:14px;line-height:20px;font-weight:700}
+body.site .card-media .tag,body.site .sl-media .tag,body.site .sl-media .tag2,body.site .card-media .rate{font-size:12px;line-height:16px;font-weight:700}
+body.site .crumbs{font-size:13px;line-height:18px;font-weight:500}
+
+/* Navigasi */
+body.site .menu a{font-size:14px;line-height:20px;font-weight:600}
+body.site .logo{font-size:18px;line-height:20px;font-weight:800}
+body.site .logo small{font-size:11px;line-height:14px;font-weight:500}
+.site-top{font-size:12px;line-height:18px;font-weight:500}
+.bottom-nav a{font-size:11px;line-height:14px;font-weight:600}
+
+/* Tombol */
+body.site .btn,body.site .btn-outline,body.site .btn-google{font-size:14px;line-height:20px;font-weight:700}
+body.site .bs-cta .btn,body.site .bs-cta .btn-outline,body.site .pd-book .btn-full,body.site .sl-fields .btn{font-size:15px;line-height:20px}
+body.site .wa-pill{font-size:13px;line-height:18px;font-weight:700}
+
+/* Harga: satu-satunya tempat bobot 800 selain display */
+body.site .price,body.site .sl-foot .price{font-size:20px;line-height:28px;font-weight:800}
+body.site .price span{font-size:13px;font-weight:500}
+body.site .pd-price b{font-size:30px;line-height:38px;font-weight:800}
+body.site .pd-price span{font-size:14px;font-weight:500}
+body.site .bs-total b{font-size:32px;line-height:40px}
+body.site .pd-bar b{font-size:18px;line-height:24px}
+
+/* Tabel & detail invoice */
+body.site .table th{font-size:13px;line-height:18px;font-weight:700}
+body.site .table td{font-size:14px;line-height:22px}
+body.site .inv-dl dt{font-size:13px;line-height:20px;font-weight:600}
+body.site .inv-dl dd{font-size:14px;line-height:20px;font-weight:600}
+body.site .invoice-title{font-size:32px;line-height:40px}
+
+/* Form & alert */
+body.site .alert{font-size:14px;line-height:22px}
+body.site .field-error{font-size:12px;line-height:18px}
+body.site .form-box h2{font-size:22px;line-height:28px;margin-bottom:6px}
+
+/* Footer */
+body.site .footer{font-size:14px;line-height:24px}
+body.site .footer b{font-size:16px;font-weight:700}
+.foot-badges span{font-size:12px;font-weight:600}
+
+/* Mobile */
+@media(max-width:900px){
+  body.site h1,body.site .sl-hero h1,body.site .apartments-hero h1,body.site .bs-banner h1,body.site .pd-title h1{font-size:24px;line-height:32px}
+  body.site .hero-modern h1{font-size:30px;line-height:38px}
+  body.site h2{font-size:20px;line-height:26px}
+  body.site .pd-card h2{font-size:17px}
+  body.site .sl-cta h3,body.site .owner-banner h3{font-size:19px;line-height:26px}
+  body.site .lead,body.site .sl-hero p,body.site .apartments-hero p,body.site .section-subtitle,body.site .pd-desc{font-size:15px;line-height:24px}
+  body.site .pd-price b{font-size:26px;line-height:34px}
+  body.site .bs-total b{font-size:28px;line-height:36px}
+  body.site .invoice-title{font-size:26px;line-height:32px}
+  body.site input,body.site select,body.site textarea{font-size:16px} /* cegah iOS zoom saat fokus */
+}

@@ -841,3 +841,12 @@ dialog.modal::backdrop{background:rgba(5,51,29,.55)}
 .su-gallery .card{padding:10px}
 .su-gallery img{width:100%;height:150px;object-fit:cover;border-radius:12px;display:block}
 @media(max-width:900px){.su-gallery{grid-template-columns:repeat(2,1fr)}.su-thumb{width:72px;height:52px}}
+
+/* Panel admin/owner: pakai font yang sama dengan situs publik */
+body.panel{font-family:'Plus Jakarta Sans',Arial,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+body.panel button,body.panel input,body.panel select,body.panel textarea{font-family:inherit}
+body.panel h1{font-size:28px;line-height:36px;font-weight:700;letter-spacing:-.02em}
+body.panel h2{font-size:20px;line-height:28px;font-weight:700}
+body.panel h3{font-size:16px;line-height:24px;font-weight:700}
+body.panel .table th,body.panel .table td{font-size:14px;line-height:20px}
+body.panel .table th{font-weight:700}

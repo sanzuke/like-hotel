@@ -4,10 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>@yield('title', 'Panel') - Like Hotel</title>
-<link rel="stylesheet" href="{{ asset('css/style.css') }}?v=32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="{{ asset('css/style.css') }}?v=33">
 @stack('head')
 </head>
-<body>
+<body class="panel">
 @php
     $isAdmin = request()->is('admin*');
     // Ikon inline (gaya Lucide, viewBox 24); dirender lewat <svg class="ico"> sehingga mengikuti warna teks.
