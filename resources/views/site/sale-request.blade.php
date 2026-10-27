@@ -16,13 +16,8 @@
     <label>Luas</label><input name="size" value="{{ old('size') }}" placeholder="Contoh: 34 m2">
     <label>Harga yang Diharapkan</label><input type="number" min="0" name="expected_price" value="{{ old('expected_price') }}">
     <label>Catatan</label><textarea name="notes">{{ old('notes') }}</textarea>
-    @if(\App\Rules\Turnstile::enabled())
-      <div class="cf-turnstile" data-sitekey="{{ config('services.turnstile.site_key') }}" data-language="id" style="margin:8px 0 14px"></div>
-    @endif
+    @include('partials.turnstile')
     <button class="btn">Kirim Pengajuan</button>
   </form>
 </div>
-@if(\App\Rules\Turnstile::enabled())
-  @push('scripts')<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>@endpush
-@endif
 @endsection

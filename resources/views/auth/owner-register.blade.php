@@ -20,6 +20,7 @@
     @error('password')<div class="field-error">{{ $message }}</div>@enderror
     <label>Ulangi Password</label>
     <input type="password" name="password_confirmation" autocomplete="new-password" required>
+    @include('partials.turnstile')
     <button class="btn">Daftar</button>
     <a class="btn-outline" href="{{ route('owner.login') }}">Login</a>
   </form>

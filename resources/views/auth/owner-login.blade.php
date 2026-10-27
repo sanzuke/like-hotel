@@ -11,6 +11,7 @@
     <input type="email" name="email" value="{{ old('email') }}" autocomplete="username" required>
     <label>Password</label>
     <input type="password" name="password" autocomplete="current-password" required>
+    @include('partials.turnstile')
     <button class="btn">Login</button>
     <a class="btn-outline" href="{{ route('owner.register') }}">Daftar Owner</a>
   </form>

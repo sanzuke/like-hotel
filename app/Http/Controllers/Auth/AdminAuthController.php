@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Rules\Turnstile;
 use App\Support\Audit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +21,11 @@ class AdminAuthController extends Controller
 
     public function login(Request $request): RedirectResponse
     {
-        $data = $request->validate(['login' => 'required|string', 'password' => 'required|string']);
+        $data = $request->validate([
+            'login' => 'required|string',
+            'password' => 'required|string',
+            'cf-turnstile-response' => [new Turnstile],
+        ]);
 
         $throttleKey = Str::lower($data['login']).'|'.$request->ip();
 
