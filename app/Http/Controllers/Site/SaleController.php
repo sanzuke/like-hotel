@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Site;
 use App\Http\Controllers\Controller;
 use App\Models\SaleRequest;
 use App\Models\SaleUnit;
+use App\Rules\Turnstile;
 use App\Support\Audit;
 use Illuminate\Http\Request;
 
@@ -77,6 +78,7 @@ class SaleController extends Controller
             'size' => 'nullable|string|max:50',
             'expected_price' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string|max:2000',
+            'cf-turnstile-response' => [new Turnstile],
         ], ['owner_phone.regex' => 'Nomor WhatsApp tidak valid.']);
 
         $lead = SaleRequest::create($data + ['status' => 'baru']);
