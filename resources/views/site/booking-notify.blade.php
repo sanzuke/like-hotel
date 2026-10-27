@@ -11,10 +11,6 @@
   $subtotal = (float) $b->total_price + $discount;
   $perNight = $nights > 0 ? $subtotal / $nights : $subtotal;
   $cover = $apt->image ? asset('storage/apartments/'.$apt->image) : null;
-  $detail = "Kode: {$b->booking_code}\nApartment: {$apt->name}\nCheck-in: {$b->checkin_label}\nCheck-out: {$b->checkout_label}\nTotal: ".Fmt::rupiah($b->total_price);
-  $adminMsg = "BOOKING BARU LIKE HOTEL\n{$detail}\nNama Tamu: {$b->guest_name}\nWA Tamu: {$b->guest_phone}\nLokasi: {$apt->location}\nStatus: {$b->payment_status}";
-  $ownerMsg = "BOOKING BARU UNIT ANDA\n{$detail}\nNama Tamu: {$b->guest_name}\nWA Tamu: {$b->guest_phone}\nHak Owner: ".Fmt::rupiah($b->owner_amount);
-  $guestMsg = "Halo {$b->guest_name}, booking Anda di Like Hotel telah dibuat.\n{$detail}\nInvoice: ".route('invoice.show', $b->access_token)."\nSilakan lanjutkan pembayaran atau hubungi admin Like Hotel.";
 @endphp
 @section('content')
 <div class="pd bs">
@@ -121,12 +117,6 @@
           <a class="btn btn-full" href="{{ route('payment.show', $b->access_token) }}"><i class="ms">credit_score</i> Bayar Sekarang</a>
         @endif
 
-        <div class="bs-wa">
-          <h3><i class="ms">chat</i> Kirim Notifikasi WhatsApp</h3>
-          <a class="btn-outline btn-full" target="_blank" rel="noopener" href="{{ Fmt::waLink(Fmt::adminWa(), $adminMsg) }}">Kirim ke Admin</a>
-          <a class="btn-outline btn-full" target="_blank" rel="noopener" href="{{ Fmt::waLink($b->owner?->phone ?: Fmt::adminWa(), $ownerMsg) }}">Kirim ke Owner</a>
-          <a class="btn-outline btn-full" target="_blank" rel="noopener" href="{{ Fmt::waLink($b->guest_phone, $guestMsg) }}">Kirim ke Tamu</a>
-        </div>
         <p class="bs-help">Butuh bantuan? <a href="{{ Fmt::waLink(Fmt::adminWa(), 'Halo Like Hotel, saya butuh bantuan untuk booking '.$b->booking_code) }}" target="_blank" rel="noopener">CS WhatsApp {{ Fmt::adminWaDisplay() }}</a></p>
       </div>
     </aside>
