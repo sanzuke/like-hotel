@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>@yield('title', 'Panel') - Like Hotel</title>
-<link rel="stylesheet" href="{{ asset('css/style.css') }}?v=31">
+<link rel="stylesheet" href="{{ asset('css/style.css') }}?v=32">
 @stack('head')
 </head>
 <body>

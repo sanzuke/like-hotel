@@ -5,6 +5,14 @@
   <h1>Unit Dijual</h1>
   <button type="button" class="btn" data-open-dialog="sale-unit-create">+ Tambah Unit Dijual</button>
 </div>
+<p class="muted">Kelola iklan unit apartemen yang dijual. Unit berstatus aktif tampil di halaman Jual Beli.</p>
+<div class="stats">
+  <div class="stat"><p>Total Unit</p><h2>{{ $stats['total'] }}</h2></div>
+  <div class="stat"><p>Aktif Tayang</p><h2>{{ $stats['aktif'] }}</h2></div>
+  <div class="stat"><p>Terjual</p><h2>{{ $stats['terjual'] }}</h2></div>
+  <div class="stat"><p>Nilai Unit Aktif</p><h2>{{ \App\Support\Fmt::rupiah($stats['nilai']) }}</h2></div>
+</div>
+<br>
 
 <form id="sale-unit-filter" method="get" action="{{ route('admin.sale-units.index') }}"></form>
 <table class="table">
@@ -28,15 +36,15 @@
   </tr>
   @forelse($rows as $r)
     <tr>
-      <td>@if($r->image)<img src="{{ asset('storage/sale_units/'.$r->image) }}" style="width:90px;height:65px;object-fit:cover;border-radius:8px" alt="">@else - @endif</td>
-      <td>{{ $r->title }}</td>
+      <td>@if($r->image)<img class="su-thumb" src="{{ asset('storage/sale_units/'.$r->image) }}" alt="">@else<span class="su-thumb su-none">-</span>@endif</td>
+      <td><b>{{ $r->title }}</b>@if($r->status === 'aktif')<br><a class="su-link" target="_blank" href="{{ route('sale-units.show', $r) }}">Lihat di situs ↗</a>@endif</td>
       <td>{{ $r->apartment_name }}<br><small>{{ $r->location }}</small></td>
-      <td>{{ \App\Support\Fmt::rupiah($r->price) }}</td>
+      <td><b class="su-price">{{ \App\Support\Fmt::rupiah($r->price) }}</b></td>
       <td>{{ $r->seller_name }}<br><small>{{ $r->seller_phone }}</small></td>
       <td>
         <form class="inline-form" method="post" action="{{ route('admin.sale-units.status', $r) }}">
           @csrf @method('PATCH')
-          <select name="status" onchange="this.form.submit()">
+          <select name="status" class="su-status su-{{ $r->status }}" onchange="this.form.submit()">
             @foreach(['aktif', 'terjual', 'nonaktif'] as $s)<option value="{{ $s }}" @selected($r->status === $s)>{{ $s }}</option>@endforeach
           </select>
         </form>

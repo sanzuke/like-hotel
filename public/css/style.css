@@ -827,3 +827,17 @@ dialog.modal::backdrop{background:rgba(5,51,29,.55)}
 .filter-actions .btn-outline{padding:7px 12px;font-size:13px;cursor:pointer}
 .filter-reset{margin-left:8px;font-size:13px;font-weight:700;color:#991b1b}
 .filter-reset:hover{text-decoration:underline}
+
+/* ===== Admin: Unit Dijual ===== */
+.su-thumb{width:96px;height:68px;object-fit:cover;border-radius:12px;display:block;border:1px solid #e5e7eb}
+.su-none{display:grid;place-items:center;background:#f1f5f9;color:#94a3b8}
+.su-price{color:#087a35;white-space:nowrap}
+.su-link{font-size:12px;font-weight:700;color:#087a35}.su-link:hover{text-decoration:underline}
+.su-status{margin:0;padding:6px 10px;border-radius:999px;font-weight:800;font-size:12px;border:1.5px solid #cbd5e1;background:#fff;width:auto;min-width:96px}
+.su-status.su-aktif{background:#e8fff1;border-color:#86efac;color:#087a35}
+.su-status.su-terjual{background:#eff6ff;border-color:#93c5fd;color:#1d4ed8}
+.su-status.su-nonaktif{background:#f1f5f9;border-color:#cbd5e1;color:#64748b}
+.su-gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.su-gallery .card{padding:10px}
+.su-gallery img{width:100%;height:150px;object-fit:cover;border-radius:12px;display:block}
+@media(max-width:900px){.su-gallery{grid-template-columns:repeat(2,1fr)}.su-thumb{width:72px;height:52px}}

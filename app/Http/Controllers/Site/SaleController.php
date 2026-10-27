@@ -10,9 +10,44 @@ use Illuminate\Http\Request;
 
 class SaleController extends Controller
 {
-    public function index()
+    private const PRICE_RANGES = [
+        'lt300' => ['< Rp 300 Juta', null, 300_000_000],
+        '300-400' => ['Rp 300 - 400 Juta', 300_000_000, 400_000_000],
+        'gt400' => ['> Rp 400 Juta', 400_000_000, null],
+    ];
+
+    public function index(Request $request)
     {
-        return view('site.sale-units', ['rows' => SaleUnit::active()->latest('id')->get()]);
+        $active = SaleUnit::active();
+        $types = (clone $active)->whereNotNull('unit_type')->where('unit_type', '!=', '')->distinct()->orderBy('unit_type')->pluck('unit_type');
+        $furnishings = (clone $active)->whereNotNull('furnishing')->where('furnishing', '!=', '')->distinct()->orderBy('furnishing')->pluck('furnishing');
+
+        $f = [
+            'q' => trim((string) $request->query('q', '')),
+            'type' => (string) $request->query('type', ''),
+            'furnishing' => (string) $request->query('furnishing', ''),
+            'price' => array_key_exists((string) $request->query('price'), self::PRICE_RANGES) ? (string) $request->query('price') : '',
+            'sort' => in_array($request->query('sort'), ['termurah', 'termahal'], true) ? $request->query('sort') : 'terbaru',
+        ];
+        [, $min, $max] = self::PRICE_RANGES[$f['price']] ?? [null, null, null];
+
+        $rows = SaleUnit::active()
+            ->when($f['q'] !== '', fn ($q) => $q->where(fn ($w) => $w
+                ->where('title', 'like', '%'.$f['q'].'%')
+                ->orWhere('apartment_name', 'like', '%'.$f['q'].'%')
+                ->orWhere('location', 'like', '%'.$f['q'].'%')))
+            ->when($f['type'] !== '', fn ($q) => $q->where('unit_type', $f['type']))
+            ->when($f['furnishing'] !== '', fn ($q) => $q->where('furnishing', $f['furnishing']))
+            ->when($min, fn ($q, $v) => $q->where('price', '>=', $v))
+            ->when($max, fn ($q, $v) => $q->where('price', '<', $v))
+            ->when($f['sort'] === 'termurah', fn ($q) => $q->orderBy('price'), fn ($q) => $f['sort'] === 'termahal' ? $q->orderByDesc('price') : $q->latest('id'))
+            ->get();
+
+        return view('site.sale-units', [
+            'rows' => $rows, 'filters' => $f, 'types' => $types, 'furnishings' => $furnishings,
+            'priceRanges' => self::PRICE_RANGES,
+            'hasFilter' => collect($f)->except('sort')->filter()->isNotEmpty() || $f['sort'] !== 'terbaru',
+        ]);
     }
 
     public function show(SaleUnit $saleUnit)
