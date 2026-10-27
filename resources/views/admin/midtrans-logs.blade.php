@@ -29,7 +29,7 @@
   <tr><th>Waktu</th><th>Order</th><th>Status Midtrans</th><th>Hasil</th><th>Catatan</th><th>Payload</th></tr>
   @forelse($logs as $l)
     <tr>
-      <td>{{ $l->created_at->format('d-m-Y H:i:s') }}</td>
+      <td>{{ \App\Support\Fmt::dateTime($l->created_at, true) }}</td>
       <td>{{ $l->order_id ?? '-' }}</td>
       <td>{{ $l->transaction_status }}</td>
       <td><b style="color:{{ ['processed' => '#087a35', 'ignored' => '#6b7280', 'rejected' => '#991b1b'][$l->result] ?? '#6b7280' }}">{{ $l->result }}</b></td>

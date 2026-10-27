@@ -4,6 +4,33 @@ namespace App\Support;
 
 class Fmt
 {
+    private const MONTHS = ['', 'Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+
+    /** Tanggal standar tampilan: "27 Okt 2026". Format Y-m-d hanya untuk sistem/input, jangan ditampilkan ke pengguna. */
+    public static function date(\DateTimeInterface|string|null $d): string
+    {
+        $d = self::carbon($d);
+
+        return $d ? $d->format('j').' '.self::MONTHS[(int) $d->format('n')].' '.$d->format('Y') : '-';
+    }
+
+    /** Tanggal + jam: "27 Okt 2026 02:55" (atau dengan detik untuk log). */
+    public static function dateTime(\DateTimeInterface|string|null $d, bool $seconds = false): string
+    {
+        $c = self::carbon($d);
+
+        return $c ? self::date($c).' '.$c->format($seconds ? 'H:i:s' : 'H:i') : '-';
+    }
+
+    private static function carbon(\DateTimeInterface|string|null $d): ?\Carbon\CarbonInterface
+    {
+        if ($d === null || $d === '') {
+            return null;
+        }
+
+        return $d instanceof \Carbon\CarbonInterface ? $d : \Illuminate\Support\Carbon::parse($d);
+    }
+
     public static function rupiah(float|int|string|null $n): string
     {
         return 'Rp'.number_format((float) $n, 0, ',', '.');

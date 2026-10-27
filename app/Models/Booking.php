@@ -82,4 +82,15 @@ class Booking extends Model
     {
         $this->update(['payment_status' => $paymentStatus, 'booking_status' => 'batal']);
     }
+
+    /** Tanggal tampilan standar (mis. 27 Okt 2026). */
+    public function getCheckinLabelAttribute(): string
+    {
+        return \App\Support\Fmt::date($this->checkin);
+    }
+
+    public function getCheckoutLabelAttribute(): string
+    {
+        return \App\Support\Fmt::date($this->checkout);
+    }
 }

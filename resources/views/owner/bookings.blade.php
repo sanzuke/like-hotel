@@ -30,12 +30,12 @@
     </td>
   </tr>
   @forelse($bookings as $b)
-    @php $msg = "Halo {$b->guest_name}, ini konfirmasi booking Anda di {$b->apartment->name}.\nKode: {$b->booking_code}\nCheck-in: {$b->checkin->toDateString()}\nCheck-out: {$b->checkout->toDateString()}"; @endphp
+    @php $msg = "Halo {$b->guest_name}, ini konfirmasi booking Anda di {$b->apartment->name}.\nKode: {$b->booking_code}\nCheck-in: {$b->checkin_label}\nCheck-out: {$b->checkout_label}"; @endphp
     <tr>
       <td><b>{{ $b->booking_code }}</b></td>
       <td>{{ $b->apartment->name }}</td>
       <td>{{ $b->guest_name }}<br><small>{{ $b->guest_phone }}</small></td>
-      <td>{{ $b->checkin->toDateString() }}<br>s/d {{ $b->checkout->toDateString() }}</td>
+      <td>{{ $b->checkin_label }}<br>s/d {{ $b->checkout_label }}</td>
       <td>{{ Fmt::rupiah($b->total_price) }}</td>
       <td>{{ Fmt::rupiah($b->owner_amount) }}</td>
       <td><span style="color:{{ Fmt::statusColor($b->payment_status) }};font-weight:800">{{ $b->payment_status }}</span><br><small>{{ $b->booking_status }}</small></td>

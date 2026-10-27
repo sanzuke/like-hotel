@@ -2,7 +2,7 @@
 @section('title', 'Booking Berhasil')
 @php
   use App\Support\Fmt;
-  $detail = "Kode: {$b->booking_code}\nApartment: {$b->apartment->name}\nCheck-in: {$b->checkin->toDateString()}\nCheck-out: {$b->checkout->toDateString()}\nTotal: ".Fmt::rupiah($b->total_price);
+  $detail = "Kode: {$b->booking_code}\nApartment: {$b->apartment->name}\nCheck-in: {$b->checkin_label}\nCheck-out: {$b->checkout_label}\nTotal: ".Fmt::rupiah($b->total_price);
   $adminMsg = "BOOKING BARU LIKE HOTEL\n{$detail}\nNama Tamu: {$b->guest_name}\nWA Tamu: {$b->guest_phone}\nLokasi: {$b->apartment->location}\nStatus: {$b->payment_status}";
   $ownerMsg = "BOOKING BARU UNIT ANDA\n{$detail}\nNama Tamu: {$b->guest_name}\nWA Tamu: {$b->guest_phone}\nHak Owner: ".Fmt::rupiah($b->owner_amount);
   $guestMsg = "Halo {$b->guest_name}, booking Anda di Like Hotel telah dibuat.\n{$detail}\nInvoice: ".route('invoice.show', $b->access_token)."\nSilakan lanjutkan pembayaran atau hubungi admin Like Hotel.";
@@ -17,8 +17,8 @@
     <div class="facility-box">
       <p><b>Kode Booking</b><br>{{ $b->booking_code }}</p>
       <p><b>Apartment</b><br>{{ $b->apartment->name }}</p>
-      <p><b>Check In</b><br>{{ $b->checkin->toDateString() }}</p>
-      <p><b>Check Out</b><br>{{ $b->checkout->toDateString() }}</p>
+      <p><b>Check In</b><br>{{ $b->checkin_label }}</p>
+      <p><b>Check Out</b><br>{{ $b->checkout_label }}</p>
       <p><b>Status</b><br>{{ $b->payment_status }}</p>
     </div>
     <br>

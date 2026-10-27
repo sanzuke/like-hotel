@@ -46,7 +46,7 @@ class SalesReportController extends Controller
             fputcsv($out, ['No', 'Tanggal', 'Penjual', 'Apartemen', 'Harga Deal', 'Tipe Komisi', 'Nilai Komisi', 'Komisi', 'Biaya Lain', 'Hak Penjual', 'Status', 'Catatan']);
             foreach ($r['rows'] as $c) {
                 fputcsv($out, [
-                    $c->number(), $c->created_at->format('d-m-Y'), $c->seller_name, $c->apartment_name, (float) $c->deal_price,
+                    $c->number(), \App\Support\Fmt::date($c->created_at), $c->seller_name, $c->apartment_name, (float) $c->deal_price,
                     $c->commission_type, (float) $c->commission_value, (float) $c->commission_amount,
                     (float) $c->other_cost, (float) $c->seller_net_amount, $c->status, $c->notes,
                 ]);

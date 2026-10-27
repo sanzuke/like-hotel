@@ -63,7 +63,7 @@
           <div class="activity-main">
             <div class="activity-title">{{ $b->apartment->name }}</div>
             <div class="activity-sub">{{ $b->booking_code }} · {{ $b->guest_name }}</div>
-            <div class="activity-time" title="{{ $b->created_at->format('d M Y H:i') }}">{{ $b->created_at->diffForHumans() }}</div>
+            <div class="activity-time" title="{{ \App\Support\Fmt::dateTime($b->created_at) }}">{{ $b->created_at->diffForHumans() }}</div>
           </div>
           <div class="activity-side">
             <div class="activity-amount">{{ Fmt::rupiah($b->total_price) }}</div>
@@ -88,7 +88,7 @@
           <div class="activity-main">
             <div class="activity-title">{{ $l->apartment_name }}</div>
             <div class="activity-sub">{{ $l->owner_name }}</div>
-            <div class="activity-time" title="{{ $l->created_at->format('d M Y H:i') }}">{{ $l->created_at->diffForHumans() }}</div>
+            <div class="activity-time" title="{{ \App\Support\Fmt::dateTime($l->created_at) }}">{{ $l->created_at->diffForHumans() }}</div>
           </div>
           <div class="activity-side">
             <span class="pill" style="--c:{{ Fmt::statusColor($l->status) }}">{{ ucfirst($l->status) }}</span>
@@ -112,7 +112,7 @@
           <div class="activity-main">
             <div class="activity-title">{{ $s->title }}</div>
             <div class="activity-sub">{{ $s->apartment_name }}</div>
-            <div class="activity-time" title="{{ $s->created_at->format('d M Y H:i') }}">{{ $s->created_at->diffForHumans() }}</div>
+            <div class="activity-time" title="{{ \App\Support\Fmt::dateTime($s->created_at) }}">{{ $s->created_at->diffForHumans() }}</div>
           </div>
           <div class="activity-side">
             <div class="activity-amount">{{ Fmt::rupiah($s->price) }}</div>

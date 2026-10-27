@@ -45,15 +45,15 @@
   @forelse($bookings as $b)
     @php
       $invoice = route('invoice.show', $b->access_token);
-      $adminMsg = "BOOKING LIKE HOTEL\nKode: {$b->booking_code}\nTamu: {$b->guest_name}\nWA: {$b->guest_phone}\nApartment: {$b->apartment->name}\nCheck-in: {$b->checkin->toDateString()}\nCheck-out: {$b->checkout->toDateString()}\nTotal: ".Fmt::rupiah($b->total_price)."\nStatus: {$b->payment_status}";
-      $ownerMsg = "BOOKING UNIT ANDA\nKode: {$b->booking_code}\nTamu: {$b->guest_name}\nApartment: {$b->apartment->name}\nCheck-in: {$b->checkin->toDateString()}\nCheck-out: {$b->checkout->toDateString()}\nHak Owner: ".Fmt::rupiah($b->owner_amount);
+      $adminMsg = "BOOKING LIKE HOTEL\nKode: {$b->booking_code}\nTamu: {$b->guest_name}\nWA: {$b->guest_phone}\nApartment: {$b->apartment->name}\nCheck-in: {$b->checkin_label}\nCheck-out: {$b->checkout_label}\nTotal: ".Fmt::rupiah($b->total_price)."\nStatus: {$b->payment_status}";
+      $ownerMsg = "BOOKING UNIT ANDA\nKode: {$b->booking_code}\nTamu: {$b->guest_name}\nApartment: {$b->apartment->name}\nCheck-in: {$b->checkin_label}\nCheck-out: {$b->checkout_label}\nHak Owner: ".Fmt::rupiah($b->owner_amount);
       $guestMsg = "Halo {$b->guest_name}, booking Like Hotel Anda sudah dibuat.\nKode: {$b->booking_code}\nApartment: {$b->apartment->name}\nTotal: ".Fmt::rupiah($b->total_price)."\nStatus: {$b->payment_status}\nInvoice: {$invoice}";
     @endphp
     <tr>
       <td><b>{{ $b->booking_code }}</b><br><small>{{ $b->invoice_number }}</small></td>
       <td>{{ $b->guest_name }}<br><small>{{ $b->guest_phone }}</small></td>
       <td>{{ $b->apartment->name }}</td>
-      <td>{{ $b->checkin->toDateString() }}<br>s/d {{ $b->checkout->toDateString() }}</td>
+      <td>{{ $b->checkin_label }}<br>s/d {{ $b->checkout_label }}</td>
       <td>{{ Fmt::rupiah($b->total_price) }}</td>
       <td>{{ Fmt::rupiah($b->commission_amount) }}</td>
       <td>{{ Fmt::rupiah($b->owner_amount) }}</td>

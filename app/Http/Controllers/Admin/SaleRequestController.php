@@ -103,7 +103,7 @@ class SaleRequestController extends Controller
         $data = $request->validate(['survey_at' => 'required|date|after:now']);
 
         $saleRequest->update(['survey_at' => $data['survey_at']]);
-        $saleRequest->addNote('survey', 'Survei dijadwalkan: '.$saleRequest->fresh()->survey_at->format('d-m-Y H:i'));
+        $saleRequest->addNote('survey', 'Survei dijadwalkan: '.\App\Support\Fmt::dateTime($saleRequest->fresh()->survey_at));
         Audit::log('crm.survey_scheduled', "Survei lead {$saleRequest->owner_name} dijadwalkan", $saleRequest);
 
         $this->advance($saleRequest, 'survey', ['baru', 'follow up']);

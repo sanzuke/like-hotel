@@ -18,14 +18,14 @@
     </div>
     <div style="text-align:right">
       <div class="invoice-title">INVOICE</div>
-      <p><b>{{ $b->invoice_number }}</b><br>{{ $b->created_at->format('d/m/Y') }}</p>
+      <p><b>{{ $b->invoice_number }}</b><br>{{ \App\Support\Fmt::date($b->created_at) }}</p>
       <span class="badge">{{ strtoupper($b->payment_status) }}</span>
     </div>
   </div>
 
   @if(! $b->isPaid() && ! $b->isCancelled())
     <div class="alert">Booking berhasil dibuat. Silakan lanjutkan pembayaran sesuai total tagihan.
-      @if($b->expires_at) Batas pembayaran: <b>{{ $b->expires_at->format('d/m/Y H:i') }}</b>. @endif
+      @if($b->expires_at) Batas pembayaran: <b>{{ \App\Support\Fmt::dateTime($b->expires_at) }}</b>. @endif
     </div>
   @endif
 
@@ -36,7 +36,7 @@
     </div>
     <div>
       <h3>Data Booking</h3>
-      <p>Kode Booking: <b>{{ $b->booking_code }}</b><br>Check-in: {{ $b->checkin->toDateString() }}<br>Check-out: {{ $b->checkout->toDateString() }}<br>Jumlah malam: {{ $nights }} malam</p>
+      <p>Kode Booking: <b>{{ $b->booking_code }}</b><br>Check-in: {{ $b->checkin_label }}<br>Check-out: {{ $b->checkout_label }}<br>Jumlah malam: {{ $nights }} malam</p>
     </div>
   </div>
 

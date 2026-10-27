@@ -32,10 +32,10 @@
   <tr><th>Kode</th><th>Apartment</th><th>Tamu</th><th>Periode</th><th>Total</th><th>Hak Owner</th><th>Status</th></tr>
   @forelse($latestBookings as $b)
     <tr>
-      <td><b>{{ $b->booking_code }}</b><br><small>{{ $b->created_at->format('d-m-Y H:i') }}</small></td>
+      <td><b>{{ $b->booking_code }}</b><br><small>{{ \App\Support\Fmt::dateTime($b->created_at) }}</small></td>
       <td>{{ $b->apartment->name }}</td>
       <td>{{ $b->guest_name }}<br><small>{{ $b->guest_phone }}</small></td>
-      <td>{{ $b->checkin->toDateString() }}<br>s/d {{ $b->checkout->toDateString() }}</td>
+      <td>{{ $b->checkin_label }}<br>s/d {{ $b->checkout_label }}</td>
       <td>{{ Fmt::rupiah($b->total_price) }}</td>
       <td>{{ Fmt::rupiah($b->owner_amount) }}</td>
       <td><span style="color:{{ Fmt::statusColor($b->payment_status) }};font-weight:800">{{ $b->payment_status }}</span><br><small>{{ $b->booking_status }}</small></td>

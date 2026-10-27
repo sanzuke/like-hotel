@@ -35,7 +35,7 @@
   @forelse($rows as $r)
     @php $msg = "Halo {$r->owner_name}, kami dari Like Hotel menindaklanjuti pengajuan titip jual unit {$r->apartment_name} ({$r->location}). Kapan kami bisa menghubungi/survei?"; @endphp
     <tr>
-      <td>{{ $r->created_at->format('d-m-Y H:i') }}</td>
+      <td>{{ \App\Support\Fmt::dateTime($r->created_at) }}</td>
       <td><a href="{{ route('admin.sale-requests.show', $r) }}"><b>{{ $r->owner_name }}</b></a><br><small>{{ $r->owner_phone }}</small></td>
       <td>{{ $r->apartment_name }}<br><small>{{ $r->location }} • {{ $r->unit_type ?: '-' }} • {{ $r->size ?: '-' }}</small></td>
       <td>{{ $r->expected_price ? Fmt::rupiah($r->expected_price) : '-' }}</td>

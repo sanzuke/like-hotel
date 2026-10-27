@@ -39,7 +39,7 @@
       <td>{{ $p->type === 'percent' ? 'Persen' : 'Nominal Rupiah' }}</td>
       <td>{{ $p->type === 'percent' ? number_format($p->value, 0, ',', '.').'%' : \App\Support\Fmt::rupiah($p->value) }}</td>
       <td><b style="color:{{ \App\Support\Fmt::statusColor($p->status) }}">{{ strtoupper($p->status) }}</b></td>
-      <td>{{ $p->expired_at?->format('d-m-Y') ?? '-' }}</td>
+      <td>{{ \App\Support\Fmt::date($p->expired_at) }}</td>
       <td>
         <form class="inline-form" method="post" action="{{ route('admin.promos.toggle', $p) }}">@csrf @method('PATCH')<button class="btn-outline">{{ $p->status === 'aktif' ? 'Nonaktifkan' : 'Aktifkan' }}</button></form>
         <form class="inline-form" method="post" action="{{ route('admin.promos.destroy', $p) }}" onsubmit="return confirm('Hapus promo ini?')">@csrf @method('DELETE')<button class="btn-outline">Hapus</button></form>

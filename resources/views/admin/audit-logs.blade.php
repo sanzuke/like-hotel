@@ -33,7 +33,7 @@
   <tr><th>Waktu</th><th>Pelaku</th><th>Aksi</th><th>Keterangan</th><th>IP</th></tr>
   @forelse($logs as $l)
     <tr>
-      <td>{{ $l->created_at->format('d-m-Y H:i:s') }}</td>
+      <td>{{ \App\Support\Fmt::dateTime($l->created_at, true) }}</td>
       <td><b>{{ $l->actor_name ?? '-' }}</b><br><small>{{ $l->actor_type }}</small></td>
       <td><code>{{ $l->action }}</code></td>
       <td>{{ $l->description }}</td>
