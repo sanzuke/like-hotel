@@ -37,7 +37,14 @@ class SaleUnitController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('admin.sale-units.index', ['rows' => $rows, 'filters' => $filters]);
+        $stats = [
+            'total' => SaleUnit::count(),
+            'aktif' => SaleUnit::where('status', 'aktif')->count(),
+            'terjual' => SaleUnit::where('status', 'terjual')->count(),
+            'nilai' => (float) SaleUnit::where('status', 'aktif')->sum('price'),
+        ];
+
+        return view('admin.sale-units.index', ['rows' => $rows, 'filters' => $filters, 'stats' => $stats]);
     }
 
     public function store(Request $request)
