@@ -393,3 +393,13 @@ body.site .apartments-hero .search-card .search{max-width:none}
   .bs-cta{flex-direction:column}.bs-cta .btn,.bs-cta .btn-outline{width:100%}
   .bs-code b{font-size:18px}
 }
+
+/* Invoice: data tamu & data booking sebagai baris label : nilai */
+.inv-dl{margin:12px 0 0;display:flex;flex-direction:column}
+.inv-dl>div{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid #eef2f7;align-items:baseline}
+.inv-dl>div:last-child{border-bottom:0}
+.inv-dl dt{color:var(--ink-2);font-size:13px;font-weight:600}
+.inv-dl dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+body.site .invoice .row{gap:40px}
+body.site .invoice h3{margin:0 0 4px}
+@media(max-width:900px){.inv-dl>div{grid-template-columns:104px 1fr}}
