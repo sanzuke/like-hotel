@@ -30,7 +30,7 @@
   <div class="stat"><p>Harga Harapan</p><h2>{{ $r->expected_price ? Fmt::rupiah($r->expected_price) : '-' }}</h2></div>
   <div class="stat"><p>Penawaran Terakhir</p><h2>{{ $r->last_offer ? Fmt::rupiah($r->last_offer) : '-' }}</h2></div>
   <div class="stat"><p>Harga Disepakati</p><h2>{{ $r->agreed_price ? Fmt::rupiah($r->agreed_price) : '-' }}</h2></div>
-  <div class="stat"><p>Jadwal Survei</p><h2 style="font-size:20px">{{ $r->survey_at ? $r->survey_at->format('d-m-Y H:i') : '-' }}</h2></div>
+  <div class="stat"><p>Jadwal Survei</p><h2 style="font-size:20px">{{ $r->survey_at ? \App\Support\Fmt::dateTime($r->survey_at) : '-' }}</h2></div>
 </div>
 <br>
 
@@ -41,7 +41,7 @@
       <p><b>Kontak:</b> {{ $r->owner_phone }}<br>
          <b>Lokasi:</b> {{ $r->location }}<br>
          <b>Tipe / Luas:</b> {{ $r->unit_type ?: '-' }} / {{ $r->size ?: '-' }}<br>
-         <b>Masuk:</b> {{ $r->created_at->format('d-m-Y H:i') }}</p>
+         <b>Masuk:</b> {{ \App\Support\Fmt::dateTime($r->created_at) }}</p>
       @if($r->notes)<div class="alert">{{ $r->notes }}</div>@endif
     </div>
 
@@ -127,7 +127,7 @@
       @forelse($r->timeline as $n)
         <div class="activity-card">
           <b>{{ $labels[$n->type] ?? ucfirst($n->type) }}</b>
-          <small> • {{ $n->author ?? 'Sistem' }} • {{ $n->created_at->format('d-m-Y H:i') }}</small><br>
+          <small> • {{ $n->author ?? 'Sistem' }} • {{ \App\Support\Fmt::dateTime($n->created_at) }}</small><br>
           {!! nl2br(e($n->body)) !!}
         </div>
       @empty

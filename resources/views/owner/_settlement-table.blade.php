@@ -19,7 +19,7 @@
   @endif
   @forelse($settlements as $s)
     <tr>
-      <td>{{ $s->created_at->format('d-m-Y H:i') }}@if($s->paid_at)<br><small>Dibayar: {{ $s->paid_at->format('d-m-Y H:i') }}</small>@endif</td>
+      <td>{{ \App\Support\Fmt::dateTime($s->created_at) }}@if($s->paid_at)<br><small>Dibayar: {{ \App\Support\Fmt::dateTime($s->paid_at) }}</small>@endif</td>
       <td>{{ \App\Support\Fmt::rupiah($s->amount) }}</td>
       <td>{{ $s->bank_name }}</td>
       <td>{{ $s->bank_account_name }}<br>{{ $s->bank_account_number }}</td>

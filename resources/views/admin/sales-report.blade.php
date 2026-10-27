@@ -57,7 +57,7 @@
   @forelse($rows as $c)
     <tr>
       <td>{{ $c->number() }}</td>
-      <td>{{ $c->created_at->format('d-m-Y') }}</td>
+      <td>{{ \App\Support\Fmt::date($c->created_at) }}</td>
       <td>{{ $c->seller_name }}</td>
       <td>{{ $c->apartment_name }}</td>
       <td>{{ Fmt::rupiah($c->deal_price) }}</td>

@@ -67,7 +67,7 @@
         <span style="color:{{ Fmt::statusColor($r->status) }};font-weight:800">{{ strtoupper($r->status) }}</span>
         @if($r->admin_notes)<br><small>{{ $r->admin_notes }}</small>@endif
       </td>
-      <td>{{ $r->created_at->format('d-m-Y H:i') }}@if($r->paid_at)<br><small>Dibayar: {{ $r->paid_at->format('d-m-Y H:i') }}</small>@endif</td>
+      <td>{{ \App\Support\Fmt::dateTime($r->created_at) }}@if($r->paid_at)<br><small>Dibayar: {{ \App\Support\Fmt::dateTime($r->paid_at) }}</small>@endif</td>
       <td>
         @if($r->status === 'pending')
           <form class="inline-form" method="post" action="{{ route('admin.settlements.approve', $r) }}" onsubmit="return confirm('Approve pencairan ini?')">@csrf<button class="btn-outline">Approve</button></form>

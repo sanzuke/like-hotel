@@ -16,7 +16,7 @@
     </div>
     <div style="text-align:right">
       <div class="invoice-title">INVOICE KOMISI</div>
-      <p><b>{{ $r->number() }}</b><br>{{ $r->created_at->format('d/m/Y') }}</p>
+      <p><b>{{ $r->number() }}</b><br>{{ \App\Support\Fmt::date($r->created_at) }}</p>
       <span class="badge">{{ strtoupper($r->status) }}</span>
     </div>
   </div>

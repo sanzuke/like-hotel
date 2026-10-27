@@ -58,7 +58,7 @@ class ReportController extends Controller
                 fputcsv($out, [
                     $r->created_at->format('Y-m-d H:i'), $r->booking_code, $r->guest_name,
                     $r->apartment->name, $r->apartment->owner_name,
-                    $r->checkin->toDateString(), $r->checkout->toDateString(),
+                    $r->checkin_label, $r->checkout_label,
                     (int) $r->total_price, (int) $r->commission_amount, (int) $r->owner_amount,
                     $r->payment_status, $r->booking_status,
                 ]);

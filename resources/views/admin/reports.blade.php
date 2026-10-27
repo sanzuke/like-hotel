@@ -36,7 +36,7 @@
   <tr><th>Tanggal</th><th>Kode</th><th>Tamu</th><th>Apartment</th><th>Owner</th><th>Total</th><th>Komisi</th><th>Hak Owner</th><th>Status</th></tr>
   @forelse($rows as $r)
     <tr>
-      <td>{{ $r->created_at->format('d-m-Y H:i') }}</td>
+      <td>{{ \App\Support\Fmt::dateTime($r->created_at) }}</td>
       <td>{{ $r->booking_code }}</td>
       <td>{{ $r->guest_name }}</td>
       <td>{{ $r->apartment->name }}</td>
