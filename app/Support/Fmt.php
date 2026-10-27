@@ -14,6 +14,17 @@ class Fmt
         return $d ? $d->format('j').' '.self::MONTHS[(int) $d->format('n')].' '.$d->format('Y') : '-';
     }
 
+    /** Tanggal dengan nama hari: "Senin, 27 Okt 2026". */
+    public static function dayDate(\DateTimeInterface|string|null $d): string
+    {
+        $c = self::carbon($d);
+        if (! $c) {
+            return '-';
+        }
+        $days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+
+        return $days[(int) $c->format('w')].', '.self::date($c);
+    }
     /** Tanggal + jam: "27 Okt 2026 02:55" (atau dengan detik untuk log). */
     public static function dateTime(\DateTimeInterface|string|null $d, bool $seconds = false): string
     {
