@@ -39,7 +39,8 @@ class BookingSuccessPageTest extends TestCase
         $this->assertStringContainsString('Sabtu, 31 Okt 2026', $html);
         $this->assertStringContainsString('Rp1.200.000', $html);
         $this->assertStringContainsString(route('payment.show', $b->access_token), $html);
-        $this->assertStringContainsString('Kirim ke Admin', $html);
+        $this->assertStringNotContainsString('Kirim ke Admin', $html);
+        $this->assertStringNotContainsString('Kirim Notifikasi WhatsApp', $html);
     }
 
     public function test_paid_booking_shows_thanks_and_no_payment_cta(): void
