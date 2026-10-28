@@ -26,4 +26,15 @@ return [
         'server_key' => env('MIDTRANS_SERVER_KEY'),
         'client_key' => env('MIDTRANS_CLIENT_KEY'),
     ],
+
+    // Profil resmi (kosongkan bila belum ada). Dipakai untuk schema sameAs dan tautan footer.
+    'social' => [
+        'instagram' => env('SOCIAL_INSTAGRAM'),
+        'tiktok' => env('SOCIAL_TIKTOK'),
+        'facebook' => env('SOCIAL_FACEBOOK'),
+        'google_business' => env('SOCIAL_GOOGLE_BUSINESS'),
+    ],
+
+    // Kode verifikasi Google Search Console (meta tag).
+    'google_site_verification' => env('GOOGLE_SITE_VERIFICATION'),
 ];

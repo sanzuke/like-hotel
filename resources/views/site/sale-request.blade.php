@@ -1,5 +1,6 @@
 @extends('layouts.public')
-@section('title', 'Titip Jual Apartment')
+@section('title', 'Titip Jual Apartemen - Like Hotel')
+@section('meta_description', 'Titipkan apartemen Anda ke Like Hotel. Kami bantu pemasaran, survei, hingga transaksi dengan proses transparan.')
 @section('content')
 <div class="form-box">
   <h2>Titip Jual Apartment</h2>

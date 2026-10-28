@@ -5,7 +5,7 @@
 <div class="card apartment-card">
   <div class="card-media">
     @if($a->image)
-      <img src="{{ asset('storage/apartments/'.$a->image) }}" class="card-photo" alt="{{ $a->name }}" loading="lazy">
+      <img src="{{ asset('storage/apartments/'.$a->image) }}" class="card-photo" alt="{{ \App\Support\Seo::alt('Sewa apartemen', $a->name, $a->type, 'di', $a->location) }}" width="640" height="420" loading="lazy" decoding="async">
     @else
       <div class="card-img card-img-modern"><span>LIKE HOTEL</span><b>Apartment</b></div>
     @endif

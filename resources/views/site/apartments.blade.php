@@ -1,5 +1,6 @@
 @extends('layouts.public')
-@section('title', 'Daftar Apartment - Like Hotel')
+@section('title', 'Daftar Apartemen Disewakan Harian & Bulanan - Like Hotel')
+@section('meta_description', 'Daftar apartemen siap sewa harian, mingguan, dan bulanan dengan harga transparan, owner terverifikasi, dan invoice otomatis di Like Hotel.')
 @section('content')
 <section class="apartments-hero">
   <span class="badge">Pilihan Apartment Terbaik</span>

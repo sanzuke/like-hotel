@@ -1,4 +1,5 @@
 @extends('layouts.public')
+@section('robots', 'noindex,nofollow')
 @section('title', 'Booking '.$a->name)
 @section('content')
 <section class="booking-page">

@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Route;
 | Situs publik
 */
 Route::get('/', [Site\ApartmentController::class, 'home'])->name('home');
+Route::get('/sitemap.xml', Site\SitemapController::class)->name('sitemap');
+Route::get('/robots.txt', Site\RobotsController::class)->name('robots');
 Route::get('/apartments', [Site\ApartmentController::class, 'index'])->name('apartments.index');
 Route::get('/apartments/{apartment}', [Site\ApartmentController::class, 'show'])->name('apartments.show');
 

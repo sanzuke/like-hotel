@@ -1,5 +1,6 @@
 @extends('layouts.public')
-@section('title', 'Jual Beli Apartment - Like Hotel')
+@section('title', 'Jual Beli Apartemen - Like Hotel')
+@section('meta_description', 'Cari apartemen dijual dengan harga terbaik dan listing terverifikasi. Tersedia info lokasi, luas, sertifikat, dan furnish di Like Hotel.')
 @section('content')
 @php
     use App\Support\Fmt;
@@ -67,7 +68,7 @@
         <article class="sl-card">
           <a class="sl-media" href="{{ route('sale-units.show', $r) }}">
             @if($r->image)
-              <img src="{{ asset('storage/sale_units/'.$r->image) }}" alt="{{ $r->title }}" loading="lazy">
+              <img src="{{ asset('storage/sale_units/'.$r->image) }}" alt="{{ \App\Support\Seo::alt('Dijual', $r->title, $r->apartment_name, $r->location) }}" width="640" height="400" loading="lazy" decoding="async">
             @else
               <div class="sl-ph"><span>LIKE HOTEL</span><b>Dijual</b></div>
             @endif

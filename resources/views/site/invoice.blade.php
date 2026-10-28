@@ -1,4 +1,5 @@
 @extends('layouts.public')
+@section('robots', 'noindex,nofollow')
 @section('title', 'Invoice '.$b->invoice_number)
 @php
   use App\Support\Fmt;

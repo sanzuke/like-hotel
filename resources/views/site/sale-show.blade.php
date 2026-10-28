@@ -1,5 +1,5 @@
 @extends('layouts.public')
-@section('title', $r->title)
+@section('title', \App\Support\Seo::title('Dijual '.$r->title.' - '.$r->apartment_name))
 @php
   use App\Support\Fmt;
   $urls = $gallery->map(fn ($i) => asset('storage/sale_units/'.$i))->all();
@@ -14,7 +14,28 @@
       ['description', 'Sertifikat', $r->certificate],
       ['chair', 'Furnish', $r->furnishing],
   ], fn ($s) => filled($s[2]));
+  $seoDescText = \Illuminate\Support\Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags((string) $r->description))) ?: "Dijual: {$r->title} di {$r->apartment_name}, {$r->location}.", 155);
+  $schema = [
+      '@context' => 'https://schema.org',
+      '@type' => 'Product',
+      'name' => $r->title,
+      'description' => $seoDescText,
+      'image' => $urls,
+      'brand' => ['@type' => 'Brand', 'name' => config('likehotel.name')],
+      'offers' => [
+          '@type' => 'Offer',
+          'url' => url()->current(),
+          'priceCurrency' => 'IDR',
+          'price' => (int) $r->price,
+          'availability' => 'https://schema.org/InStock',
+      ],
+  ];
 @endphp
+@section('meta_description', $seoDescText)
+@if($urls)@section('og_image', $urls[0])@endif
+@push('jsonld')
+<script type="application/ld+json">{!! json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
+@endpush
 @section('content')
 <div class="pd">
   <nav class="crumbs no-print" aria-label="Breadcrumb">
@@ -35,11 +56,11 @@
 
   @if($urls)
     <div class="pd-gallery">
-      <img id="mainPhoto" class="pd-main-photo" src="{{ $urls[0] }}" alt="{{ $r->title }}" onclick="openLightbox(currentIndex)">
+      <img id="mainPhoto" class="pd-main-photo" src="{{ $urls[0] }}" alt="{{ \App\Support\Seo::alt('Dijual', $r->title, $r->apartment_name, $r->location) }}" width="1200" height="800" fetchpriority="high" decoding="async" onclick="openLightbox(currentIndex)">
       @if(count($urls) > 1)
         <div class="pd-thumbs">
           @foreach($urls as $i => $url)
-            <img src="{{ $url }}" onclick="changePhoto({{ $i }})" class="thumb-img {{ $i === 0 ? 'active-thumb' : '' }}" data-index="{{ $i }}" alt="Foto {{ $i + 1 }}" loading="lazy">
+            <img src="{{ $url }}" onclick="changePhoto({{ $i }})" class="thumb-img {{ $i === 0 ? 'active-thumb' : '' }}" data-index="{{ $i }}" alt="{{ \App\Support\Seo::alt($r->title, 'foto', $i + 1) }}" width="110" height="76" loading="lazy" decoding="async">
           @endforeach
         </div>
       @endif
