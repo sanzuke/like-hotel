@@ -54,8 +54,14 @@ class ApartmentController extends Controller
         ]);
     }
 
-    public function show(Apartment $apartment)
+    public function show(Request $request, Apartment $apartment)
     {
+        abort_unless($apartment->status === 'aktif', 404);
+
+        if ($request->route()->originalParameter('apartment') !== $apartment->getRouteKey()) {
+            return redirect(route('apartments.show', $apartment).($request->getQueryString() ? '?'.$request->getQueryString() : ''), 301);
+        }
+
         $gallery = collect([$apartment->image])
             ->merge($apartment->images()->orderBy('id')->pluck('image'))
             ->filter()

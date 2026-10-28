@@ -496,3 +496,7 @@ body.site .footer b{font-size:16px;font-weight:700}
   body.site .invoice-title{font-size:26px;line-height:32px}
   body.site input,body.site select,body.site textarea{font-size:16px} /* cegah iOS zoom saat fokus */
 }
+
+.foot-social{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:10px 0 4px}
+.foot-social a{color:#d1fae5;font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.foot-social a:hover{color:#fff}

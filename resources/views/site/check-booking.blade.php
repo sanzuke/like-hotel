@@ -1,4 +1,5 @@
 @extends('layouts.public')
+@section('robots', 'noindex,nofollow')
 @section('title', 'Cek Booking')
 @section('content')
 <div class="form-box">

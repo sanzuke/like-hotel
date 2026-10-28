@@ -1,12 +1,45 @@
 @extends('layouts.public')
-@section('title', $a->name)
+@section('title', \App\Support\Seo::title('Sewa '.$a->name.' '.$a->type.' di '.$a->location))
 @section('content')
 @php
     $urls = $gallery->map(fn ($i) => asset('storage/apartments/'.$i))->all();
     $facs = collect(preg_split('/[,;\n]+/', (string) $a->facilities))->map(fn ($f) => trim($f))->filter()->values();
     $wa = 'https://wa.me/'.config('likehotel.admin_wa');
     $price = (int) $a->price_per_night;
+    $seoDescText = \Illuminate\Support\Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags((string) $a->description))) ?: "Sewa {$a->type} {$a->name} di {$a->location}.", 155);
+    $schema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'Product',
+        'name' => $a->name,
+        'description' => $seoDescText,
+        'image' => $urls,
+        'category' => $a->type,
+        'brand' => ['@type' => 'Brand', 'name' => config('likehotel.name')],
+        'offers' => [
+            '@type' => 'Offer',
+            'url' => url()->current(),
+            'priceCurrency' => 'IDR',
+            'price' => $price,
+            'availability' => 'https://schema.org/InStock',
+        ],
+    ];
+    $crumbSchema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Beranda', 'item' => route('home')],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Sewa Apartment', 'item' => route('apartments.index')],
+            ['@type' => 'ListItem', 'position' => 3, 'name' => $a->name],
+        ],
+    ];
 @endphp
+@section('meta_description', $seoDescText)
+@if($urls)@section('og_image', $urls[0])@endif
+@section('og_type', 'product')
+@push('jsonld')
+<script type="application/ld+json">{!! json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
+<script type="application/ld+json">{!! json_encode($crumbSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
+@endpush
 <div class="pd">
   <nav class="crumbs no-print" aria-label="Breadcrumb">
     <a href="{{ route('home') }}">Beranda</a><i class="ms">chevron_right</i>
@@ -27,11 +60,11 @@
   {{-- Galeri --}}
   @if($urls)
     <div class="pd-gallery">
-      <img id="mainPhoto" class="pd-main-photo" src="{{ $urls[0] }}" alt="{{ $a->name }}" onclick="openLightbox(currentIndex)">
+      <img id="mainPhoto" class="pd-main-photo" src="{{ $urls[0] }}" alt="{{ \App\Support\Seo::alt('Sewa apartemen', $a->name, $a->type, 'di', $a->location) }}" width="1200" height="800" fetchpriority="high" decoding="async" onclick="openLightbox(currentIndex)">
       @if(count($urls) > 1)
         <div class="pd-thumbs">
           @foreach($urls as $i => $url)
-            <img src="{{ $url }}" onclick="changePhoto({{ $i }})" class="thumb-img {{ $i === 0 ? 'active-thumb' : '' }}" data-index="{{ $i }}" alt="Foto {{ $i + 1 }}" loading="lazy">
+            <img src="{{ $url }}" onclick="changePhoto({{ $i }})" class="thumb-img {{ $i === 0 ? 'active-thumb' : '' }}" data-index="{{ $i }}" alt="{{ \App\Support\Seo::alt($a->name, 'foto', $i + 1) }}" width="110" height="76" loading="lazy" decoding="async">
           @endforeach
         </div>
       @endif

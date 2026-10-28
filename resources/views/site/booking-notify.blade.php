@@ -1,4 +1,5 @@
 @extends('layouts.public')
+@section('robots', 'noindex,nofollow')
 @section('title', 'Booking Berhasil')
 @php
   use App\Support\Fmt;

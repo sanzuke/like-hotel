@@ -1,4 +1,5 @@
 @extends('layouts.public')
+@section('robots', 'noindex,nofollow')
 @section('title', 'Pembayaran')
 @push('head')
 <script src="{{ $snapJs }}" data-client-key="{{ $clientKey }}"></script>

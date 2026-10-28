@@ -51,9 +51,13 @@ class SaleController extends Controller
         ]);
     }
 
-    public function show(SaleUnit $saleUnit)
+    public function show(Request $request, SaleUnit $saleUnit)
     {
         abort_unless($saleUnit->status === 'aktif', 404, 'Unit dijual tidak ditemukan atau sudah tidak aktif.');
+
+        if ($request->route()->originalParameter('saleUnit') !== $saleUnit->getRouteKey()) {
+            return redirect(route('sale-units.show', $saleUnit).($request->getQueryString() ? '?'.$request->getQueryString() : ''), 301);
+        }
 
         $gallery = collect([$saleUnit->image])
             ->merge($saleUnit->images()->orderBy('id')->pluck('image'))
