@@ -21,7 +21,7 @@ class BookingSuccessPageTest extends TestCase
         ]);
         $this->post(route('booking.store', $apt), [
             'guest_name' => 'Tamu', 'guest_phone' => '081234567890', 'guest_email' => 't@x.com',
-            'checkin' => '2026-10-27', 'checkout' => '2026-10-31',
+            'checkin' => now()->addDays(10)->toDateString(), 'checkout' => now()->addDays(14)->toDateString(),
         ])->assertRedirect();
 
         return Booking::firstOrFail();
@@ -35,8 +35,8 @@ class BookingSuccessPageTest extends TestCase
         $this->assertStringContainsString('Selesaikan Pembayaran Anda', $html);
         $this->assertStringContainsString('data-expire="', $html);
         $this->assertStringContainsString($b->booking_code, $html);
-        $this->assertStringContainsString('Selasa, 27 Okt 2026', $html);
-        $this->assertStringContainsString('Sabtu, 31 Okt 2026', $html);
+        $this->assertStringContainsString(\App\Support\Fmt::dayDate(now()->addDays(10)), $html);
+        $this->assertStringContainsString(\App\Support\Fmt::dayDate(now()->addDays(14)), $html);
         $this->assertStringContainsString('Rp1.200.000', $html);
         $this->assertStringContainsString(route('payment.show', $b->access_token), $html);
         $this->assertStringNotContainsString('Kirim ke Admin', $html);

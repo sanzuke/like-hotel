@@ -118,6 +118,9 @@
       <div style="color:#6b7280;font-size:13px">{{ $actorSubtitle }}</div>
     </div>
   </div>
+  @if($isAdmin)
+    <a class="btn-outline" href="{{ route('admin.password.edit') }}" style="display:flex;justify-content:center;margin-bottom:10px"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">{!! $icons['shield'] !!}</svg> Ganti Password</a>
+  @endif
   <form method="post" action="{{ route($logoutRoute) }}">
     @csrf
     <button type="submit" class="btn" style="width:100%;justify-content:center"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true">{!! $icons['logout'] !!}</svg> Logout</button>

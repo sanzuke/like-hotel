@@ -33,15 +33,15 @@ class DateFormatTest extends TestCase
 
         $this->post(route('booking.store', $apt), [
             'guest_name' => 'Tamu', 'guest_phone' => '081234567890', 'guest_email' => 't@x.com',
-            'checkin' => '2026-10-27', 'checkout' => '2026-10-31',
+            'checkin' => now()->addDays(10)->toDateString(), 'checkout' => now()->addDays(14)->toDateString(),
         ])->assertRedirect();
 
         $b = Booking::firstOrFail();
         foreach ([route('invoice.show', $b->access_token), route('booking.notify', $b->access_token)] as $url) {
             $html = $this->get($url)->assertOk()->getContent();
-            $this->assertStringContainsString('27 Okt 2026', $html);
-            $this->assertStringContainsString('31 Okt 2026', $html);
-            $this->assertStringNotContainsString('2026-10-27', $html);
+            $this->assertStringContainsString(Fmt::date(now()->addDays(10)), $html);
+            $this->assertStringContainsString(Fmt::date(now()->addDays(14)), $html);
+            $this->assertStringNotContainsString(now()->addDays(10)->toDateString(), $html);
         }
     }
 }

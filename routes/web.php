@@ -77,6 +77,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('auth:admin')->group(function () {
         Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
         Route::get('/', Admin\DashboardController::class)->name('dashboard');
+        Route::get('/password', [Admin\PasswordController::class, 'edit'])->name('password.edit');
+        Route::put('/password', [Admin\PasswordController::class, 'update'])->middleware('throttle:5,1')->name('password.update');
 
         Route::get('/apartments', [Admin\ApartmentController::class, 'index'])->name('apartments.index');
         Route::post('/apartments', [Admin\ApartmentController::class, 'store'])->name('apartments.store');
