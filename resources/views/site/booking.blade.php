@@ -19,13 +19,13 @@
     <form method="post" action="{{ route('booking.store', $a) }}" id="bookingForm">
       @csrf
       <label>Nama Lengkap</label>
-      <input name="guest_name" placeholder="Nama sesuai KTP" value="{{ old('guest_name') }}" required>
+      <input name="guest_name" placeholder="Nama sesuai KTP" value="{{ old('guest_name', $guest->name) }}" required>
 
       <label>No WhatsApp</label>
-      <input name="guest_phone" placeholder="Contoh: 082129248953" value="{{ old('guest_phone') }}" required>
+      <input name="guest_phone" placeholder="Contoh: 082129248953" value="{{ old('guest_phone', $guest->phone) }}" required>
 
       <label>Email</label>
-      <input type="email" name="guest_email" placeholder="email@gmail.com" value="{{ old('guest_email') }}" required>
+      <input type="email" name="guest_email" placeholder="email@gmail.com" value="{{ old('guest_email', $guest->email) }}" required>
 
       <label>Kode Promo</label>
       <input name="promo_code" placeholder="Masukkan kode promo" value="{{ old('promo_code') }}">

@@ -35,7 +35,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block">
 <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=20">
-<link rel="stylesheet" href="{{ asset('css/site.css') }}?v=15">
+<link rel="stylesheet" href="{{ asset('css/site.css') }}?v=17">
 @stack('head')
 @stack('jsonld')
 </head>
@@ -69,7 +69,11 @@
         <a href="{{ route($route) }}" @class(['on' => request()->routeIs($pattern)])>{{ $label }}</a>
       @endforeach
       <a href="{{ $wa }}" class="wa-pill" target="_blank" rel="noopener"><i class="ms">chat</i> Chat WA</a>
-      <a href="{{ route('owner.login') }}" class="btn-outline">Login</a>
+      @auth('guest')
+        <a href="{{ route('guest.bookings') }}" class="btn-outline"><i class="ms">person</i> {{ \Illuminate\Support\Str::words(auth('guest')->user()->name, 1, '') }}</a>
+      @else
+        <a href="{{ route('guest.login') }}" class="btn-outline">Masuk</a>
+      @endauth
     </nav>
     <a href="{{ $wa }}" class="wa-pill mobile-wa" target="_blank" rel="noopener" style="display:none" aria-label="Chat WhatsApp"><i class="ms">chat</i> CS</a>
   </div>
@@ -79,7 +83,7 @@
 @yield('content')
 
 <div class="footer no-print">
-  <nav aria-label="Tautan footer"><a href="{{ route('apartments.index') }}">Sewa Apartment</a> &middot; <a href="{{ route('sale-units.index') }}">Jual Beli Apartment</a> &middot; <a href="{{ route('sale-request.create') }}">Titip Jual</a> &middot; <a href="{{ route('booking.check') }}">Cek Booking</a></nav>
+  <nav aria-label="Tautan footer"><a href="{{ route('apartments.index') }}">Sewa Apartment</a> &middot; <a href="{{ route('sale-units.index') }}">Jual Beli Apartment</a> &middot; <a href="{{ route('sale-request.create') }}">Titip Jual</a> &middot; <a href="{{ route('booking.check') }}">Cek Booking</a> &middot; <a href="{{ route('owner.login') }}" rel="nofollow">Login Owner</a></nav>
   <b>Like Hotel Sewa Apartment Dekat</b><br>
   WhatsApp: {{ \App\Support\Fmt::adminWaDisplay() }}
   <div class="foot-badges"><span>QRIS</span><span>Virtual Account</span><span>Midtrans</span></div>
@@ -94,6 +98,7 @@
   @foreach($navItems as [$route, $pattern, $label, $icon, $short])
     <a href="{{ route($route) }}" @class(['on' => request()->routeIs($pattern)])><i class="ms">{{ $icon }}</i>{{ $short }}</a>
   @endforeach
+  <a href="{{ auth('guest')->check() ? route('guest.bookings') : route('guest.login') }}" @class(['on' => request()->routeIs('guest.*')])><i class="ms">person</i>{{ auth('guest')->check() ? 'Akun' : 'Masuk' }}</a>
 </nav>
 
 @stack('scripts')

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Auth\AdminAuthController;
+use App\Http\Controllers\Auth\GuestAuthController;
+use App\Http\Controllers\Auth\GuestGoogleController;
 use App\Http\Controllers\Auth\OwnerAuthController;
 use App\Http\Controllers\Auth\OwnerGoogleController;
 use App\Http\Controllers\Owner;
@@ -17,9 +19,29 @@ Route::get('/robots.txt', Site\RobotsController::class)->name('robots');
 Route::get('/apartments', [Site\ApartmentController::class, 'index'])->name('apartments.index');
 Route::get('/apartments/{apartment}', [Site\ApartmentController::class, 'show'])->name('apartments.show');
 
-Route::get('/apartments/{apartment}/booking', [Site\BookingController::class, 'create'])->name('booking.create');
-Route::post('/apartments/{apartment}/booking', [Site\BookingController::class, 'store'])
-    ->middleware('throttle:10,1')->name('booking.store');
+// Booking wajib login sebagai penyewa.
+Route::middleware('auth:guest')->group(function () {
+    Route::get('/apartments/{apartment}/booking', [Site\BookingController::class, 'create'])->name('booking.create');
+    Route::post('/apartments/{apartment}/booking', [Site\BookingController::class, 'store'])
+        ->middleware('throttle:10,1')->name('booking.store');
+});
+
+/*
+| Akun penyewa
+*/
+Route::middleware('guest:guest')->group(function () {
+    Route::get('/masuk', [GuestAuthController::class, 'showLogin'])->name('guest.login');
+    Route::post('/masuk', [GuestAuthController::class, 'login'])->name('guest.login.submit');
+    Route::get('/daftar', [GuestAuthController::class, 'showRegister'])->name('guest.register');
+    Route::post('/daftar', [GuestAuthController::class, 'register'])->middleware('throttle:5,1')->name('guest.register.submit');
+    Route::get('/masuk/google', [GuestGoogleController::class, 'redirect'])->middleware('throttle:10,1')->name('guest.google.redirect');
+    Route::get('/masuk/google/callback', [GuestGoogleController::class, 'callback'])->middleware('throttle:10,1')->name('guest.google.callback');
+});
+Route::middleware('auth:guest')->group(function () {
+    Route::post('/keluar', [GuestAuthController::class, 'logout'])->name('guest.logout');
+    Route::get('/akun/booking', [Site\MyBookingsController::class, 'index'])->name('guest.bookings');
+    Route::put('/akun/profil', [Site\MyBookingsController::class, 'updateProfile'])->name('guest.profile');
+});
 
 Route::get('/cek-booking', [Site\CheckBookingController::class, 'form'])->name('booking.check');
 Route::post('/cek-booking', [Site\CheckBookingController::class, 'lookup'])
