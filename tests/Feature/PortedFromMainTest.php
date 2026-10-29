@@ -48,6 +48,7 @@ class PortedFromMainTest extends TestCase
     {
         config(['likehotel.midtrans.server_key' => 'k']);
         $a = Apartment::create(['owner_name' => 'LH', 'name' => 'U', 'location' => 'L', 'type' => 'S', 'price_per_night' => 100000, 'status' => 'aktif']);
+        $this->loginGuest();
         $this->post(route('booking.store', $a), [
             'guest_name' => 'T', 'guest_phone' => '081234567890', 'guest_email' => 't@x.id',
             'checkin' => now()->addDay()->toDateString(), 'checkout' => now()->addDays(2)->toDateString(),

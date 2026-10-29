@@ -20,7 +20,11 @@ return Application::configure(basePath: dirname(__DIR__))
                 return route('admin.login');
             }
 
-            return route('owner.login');
+            if ($request->is('owner/*') || $request->is('owner')) {
+                return route('owner.login');
+            }
+
+            return route('guest.login');
         });
     })
     ->withExceptions(function (Exceptions $exceptions): void {

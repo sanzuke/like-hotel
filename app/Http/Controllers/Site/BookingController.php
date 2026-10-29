@@ -7,6 +7,7 @@ use App\Models\Apartment;
 use App\Models\Booking;
 use App\Services\BookingService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
@@ -18,6 +19,7 @@ class BookingController extends Controller
 
         return view('site.booking', [
             'a' => $apartment,
+            'guest' => Auth::guard('guest')->user(),
             'bookedDates' => $this->bookings->bookedDates($apartment),
         ]);
     }
@@ -37,7 +39,13 @@ class BookingController extends Controller
             'guest_phone.regex' => 'Nomor WhatsApp tidak valid.',
         ]);
 
-        $booking = $this->bookings->create($apartment, $data);
+        $guest = Auth::guard('guest')->user();
+        $booking = $this->bookings->create($apartment, $data + ['guest_id' => $guest->id]);
+
+        // Lengkapi nomor WA akun bila belum ada, agar terisi otomatis di booking berikutnya.
+        if (blank($guest->phone)) {
+            $guest->update(['phone' => $data['guest_phone']]);
+        }
 
         return redirect()->route('booking.notify', $booking->access_token);
     }

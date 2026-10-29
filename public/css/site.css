@@ -500,3 +500,31 @@ body.site .footer b{font-size:16px;font-weight:700}
 .foot-social{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:10px 0 4px}
 .foot-social a{color:#d1fae5;font-size:13px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
 .foot-social a:hover{color:#fff}
+
+/* ===== Akun penyewa ===== */
+body.site .menu .btn-outline{display:inline-flex;align-items:center;gap:6px}
+body.site .menu .btn-outline .ms{font-size:18px}
+body.site .form-box .muted a{color:var(--primary);font-weight:700}
+.mb-page{max-width:1080px;margin:0 auto;padding:32px 20px 48px}
+.mb-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.mb-head h1{font-size:32px;line-height:40px;font-weight:700;margin:8px 0 4px}
+.mb-head .btn-outline{cursor:pointer;font-size:14px;line-height:20px;font-weight:700}
+.mb-grid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;align-items:start}
+.mb-list{display:grid;gap:14px}
+.mb-card,.mb-profile,.mb-empty{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 2px 12px rgba(19,27,46,.04)}
+.mb-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.mb-top b{display:block;font-size:18px;line-height:24px;font-weight:700}
+.mb-top small{display:block;font-size:12px;line-height:16px;color:var(--ink-2);margin-top:2px}
+.mb-meta{display:grid;gap:6px;margin:14px 0;font-size:14px;line-height:22px;color:var(--ink-2)}
+.mb-meta span{display:flex;align-items:center;gap:8px}.mb-meta .ms{font-size:18px;color:var(--primary)}
+.mb-actions{display:flex;gap:10px;flex-wrap:wrap}
+.mb-actions .btn,.mb-actions .btn-outline{padding:10px 18px;font-size:14px;line-height:20px;text-align:center}
+.mb-empty{text-align:center;padding:40px 20px}.mb-empty .ms{font-size:40px;color:var(--primary)}
+.mb-empty b{display:block;font-size:18px;line-height:24px;margin:8px 0 4px}.mb-empty .btn{display:inline-block;margin-top:10px}
+.mb-profile h2{font-size:22px;line-height:28px;font-weight:700;margin:0 0 2px}
+.mb-profile label{display:block;margin-top:12px}
+@media(max-width:900px){
+  .mb-page{padding:20px 16px 32px}.mb-head h1{font-size:26px;line-height:32px}
+  .mb-grid{grid-template-columns:1fr}
+  .bottom-nav a{min-width:0;flex:1}
+}

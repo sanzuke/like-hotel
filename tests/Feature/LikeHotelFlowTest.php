@@ -18,6 +18,7 @@ class LikeHotelFlowTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->loginGuest();
         config(['likehotel.midtrans.server_key' => 'test-server-key']);
     }
 

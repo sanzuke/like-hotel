@@ -50,6 +50,10 @@ return [
             'driver' => 'session',
             'provider' => 'owners',
         ],
+        'guest' => [
+            'driver' => 'session',
+            'provider' => 'guests',
+        ],
     ],
 
     /*
@@ -83,6 +87,11 @@ return [
         'owners' => [
             'driver' => 'eloquent',
             'model' => App\Models\Owner::class,
+        ],
+
+        'guests' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Guest::class,
         ],
 
         // 'users' => [

@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
 class Booking extends Model
 {
     protected $fillable = [
-        'booking_code', 'invoice_number', 'access_token', 'apartment_id', 'owner_id',
+        'booking_code', 'invoice_number', 'access_token', 'apartment_id', 'owner_id', 'guest_id',
         'guest_name', 'guest_phone', 'guest_email', 'checkin', 'checkout',
         'total_price', 'commission_amount', 'owner_amount', 'promo_code', 'discount_amount',
         'snap_token', 'payment_status', 'booking_status', 'paid_at', 'expires_at', 'midtrans_response',

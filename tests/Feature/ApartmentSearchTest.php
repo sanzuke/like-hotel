@@ -64,6 +64,7 @@ class ApartmentSearchTest extends TestCase
     public function test_invalid_dates_are_rejected_and_dates_prefill_booking(): void
     {
         $a = $this->apt('Unit', 'Bandung', 'Studio', 300000);
+        $this->loginGuest();
 
         $this->get(route('apartments.index', ['checkin' => now()->addDays(3)->toDateString(), 'checkout' => now()->addDay()->toDateString()]))
             ->assertSessionHasErrors('checkout');

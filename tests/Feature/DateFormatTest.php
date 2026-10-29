@@ -31,6 +31,7 @@ class DateFormatTest extends TestCase
             'price_per_night' => 300000, 'facilities' => 'AC', 'status' => 'aktif',
         ]);
 
+        $this->loginGuest();
         $this->post(route('booking.store', $apt), [
             'guest_name' => 'Tamu', 'guest_phone' => '081234567890', 'guest_email' => 't@x.com',
             'checkin' => now()->addDays(10)->toDateString(), 'checkout' => now()->addDays(14)->toDateString(),

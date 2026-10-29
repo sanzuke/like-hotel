@@ -80,6 +80,7 @@ class BookingService
                 'access_token' => Str::random(40),
                 'apartment_id' => $locked->id,
                 'owner_id' => $locked->owner_id,
+                'guest_id' => $data['guest_id'] ?? null,
                 'guest_name' => $data['guest_name'],
                 'guest_phone' => $data['guest_phone'],
                 'guest_email' => $data['guest_email'],
