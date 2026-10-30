@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin;
 use App\Http\Controllers\Auth\AdminAuthController;
 use App\Http\Controllers\Auth\GuestAuthController;
 use App\Http\Controllers\Auth\GuestGoogleController;
+use App\Http\Controllers\Auth\GuestVerificationController;
 use App\Http\Controllers\Auth\OwnerAuthController;
 use App\Http\Controllers\Auth\OwnerGoogleController;
 use App\Http\Controllers\Owner;
@@ -40,6 +41,10 @@ Route::middleware('guest:guest')->group(function () {
 Route::middleware('auth:guest')->group(function () {
     Route::post('/keluar', [GuestAuthController::class, 'logout'])->name('guest.logout');
     Route::get('/akun/booking', [Site\MyBookingsController::class, 'index'])->name('guest.bookings');
+    Route::get('/akun/verifikasi-email/{id}/{hash}', [GuestVerificationController::class, 'verify'])
+        ->middleware(['signed', 'throttle:10,1'])->name('guest.verify');
+    Route::post('/akun/verifikasi-email/kirim', [GuestVerificationController::class, 'resend'])
+        ->middleware('throttle:3,1')->name('guest.verify.resend');
     Route::put('/akun/profil', [Site\MyBookingsController::class, 'updateProfile'])->name('guest.profile');
 });
 

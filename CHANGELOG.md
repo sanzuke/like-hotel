@@ -2,6 +2,14 @@
 
 Format: tanggal, ringkasan per area. Entri terbaru di atas.
 
+## 2026-10-31 — Tautkan booking lama ke akun penyewa (verifikasi email)
+
+- Kolom `guests.email_verified_at` (migrasi `2026_10_31_000001`); akun murni-Google otomatis terverifikasi.
+- Daftar dengan email+password mengirim email verifikasi (tautan bertanda tangan, berlaku 48 jam). Gagal kirim email tidak menggagalkan pendaftaran.
+- Tautan hanya sah bila dibuka saat masuk ke akun yang sama (mencegah pendaftar yang memakai email orang lain ikut mengambil booking pemilik email aslinya). Setelah terverifikasi, booking lama yang `guest_id`-nya kosong dan emailnya sama (tidak peka kapitalisasi) ditautkan ke akun.
+- Booking Saya menampilkan banner "Email belum diverifikasi" + tombol kirim ulang (throttle 3/menit).
+- Perlu SMTP yang berfungsi di server (`MAIL_*` di `.env`); dengan `MAIL_MAILER=log` tautan hanya tertulis di `storage/logs/laravel.log`.
+
 ## 2026-10-24 — UI panel admin & owner
 
 ### Layout panel (`layouts/panel.blade.php`)
