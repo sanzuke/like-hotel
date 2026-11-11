@@ -47,7 +47,10 @@
       <td>{{ $a->type }}</td>
       <td>{{ \App\Support\Fmt::rupiah($a->price_per_night) }}</td>
       <td>{{ $a->status }}</td>
-      <td><a class="btn" href="{{ route('admin.apartments.edit', $a) }}">Edit</a></td>
+      <td>
+        <a class="btn" href="{{ route('admin.apartments.edit', $a) }}">Edit</a>
+        <form class="inline-form" method="post" action="{{ route('admin.apartments.destroy', $a) }}" onsubmit="return confirm('Hapus apartment ini beserta fotonya?')">@csrf @method('DELETE')<button class="btn-outline">Hapus</button></form>
+      </td>
     </tr>
   @empty
     <tr><td colspan="8" style="text-align:center;color:#6b7280">

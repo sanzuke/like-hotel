@@ -44,7 +44,7 @@ class ApartmentSearchTest extends TestCase
         $cancelled = $this->apt('Unit Batal', 'Bandung', 'Studio', 300000);
 
         $mk = fn (Apartment $a, string $status) => Booking::create([
-            'booking_code' => 'LH'.$a->id, 'access_token' => str_repeat((string) $a->id, 40), 'apartment_id' => $a->id,
+            'booking_code' => 'LH'.$a->id, 'access_token' => str_pad((string) $a->id, 40, '0', STR_PAD_LEFT), 'apartment_id' => $a->id,
             'guest_name' => 'T', 'guest_phone' => '081234567890', 'guest_email' => 't@x.id',
             'checkin' => now()->addDays(10)->toDateString(), 'checkout' => now()->addDays(12)->toDateString(),
             'total_price' => 600000, 'booking_status' => $status,

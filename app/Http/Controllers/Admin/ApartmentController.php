@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Apartment;
 use App\Models\ApartmentImage;
 use App\Models\Owner;
+use App\Support\Audit;
 use App\Support\ImageStore;
 use Illuminate\Http\Request;
 
@@ -78,6 +79,24 @@ class ApartmentController extends Controller
         $this->attachImages($request, $apartment);
 
         return redirect()->route('admin.apartments.edit', $apartment)->with('success', 'Perubahan disimpan.');
+    }
+
+    public function destroy(Apartment $apartment)
+    {
+        // Riwayat booking, pembayaran, dan pencairan merujuk ke apartment ini; jangan sampai ikut hilang.
+        if ($apartment->bookings()->exists()) {
+            return back()->with('error', "Apartment \"{$apartment->name}\" tidak bisa dihapus karena sudah memiliki riwayat booking. Ubah statusnya menjadi nonaktif agar tidak tampil di situs.");
+        }
+
+        $files = $apartment->images->pluck('image')->push($apartment->image)->filter()->unique();
+        Audit::log('apartment.deleted', "Apartment \"{$apartment->name}\" dihapus", $apartment);
+        $apartment->delete();
+
+        foreach ($files as $file) {
+            ImageStore::delete($file, self::DIR);
+        }
+
+        return redirect()->route('admin.apartments.index')->with('success', 'Apartment dihapus.');
     }
 
     public function setCover(Apartment $apartment, ApartmentImage $image)
