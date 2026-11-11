@@ -2,6 +2,35 @@
 
 Format: tanggal, ringkasan per area. Entri terbaru di atas.
 
+## 2026-11-12 — Tombol hapus apartment (admin & owner)
+
+- Admin Kelola Apartment dan Owner Unit Saya: tombol **Hapus** dengan konfirmasi. Apartment dihapus beserta fotonya dan dicatat di audit log (`apartment.deleted`).
+- Apartment yang sudah punya riwayat booking tidak bisa dihapus (pesan error; admin disarankan menonaktifkan).
+- Owner hanya bisa menghapus unit miliknya sendiri (unit owner lain: 404).
+- Route baru: `DELETE /admin/apartments/{apartment}`, `DELETE /owner/apartments/{apartment}`.
+- Tes baru `AdminApartmentDeleteTest`, `OwnerApartmentDeleteTest`; `ApartmentSearchTest` diperbaiki (token uji melebihi 64 karakter saat id dua digit).
+
+## 2026-11-11 — Terjemahan pesan validasi
+
+- Folder `lang/id` ditambahkan: `validation.php` (semua aturan bawaan Laravel + nama kolom ramah dibaca, mis. "Tanggal check-in wajib diisi."), `auth.php`, `pagination.php`, `passwords.php`.
+- `.env.example`: `APP_LOCALE`, `APP_FALLBACK_LOCALE` menjadi `id`, `APP_FAKER_LOCALE` menjadi `id_ID`.
+- Tes baru `ValidationTranslationTest`: pesan berbahasa Indonesia dan kelengkapan kunci terhadap berkas `en` bawaan framework.
+
+## 2026-10-29 — Akun penyewa, SEO, ganti password admin
+
+- Akun penyewa: daftar/login dengan email atau Google, booking wajib login, halaman Booking Saya dan ubah profil.
+- SEO: URL berslug, `robots.txt` dan `sitemap.xml` dinamis, judul dan alt gambar, kompresi gambar, meta sosial/GSC. Panduan: `docs/SEO_CHECKLIST.md`.
+- Panel admin: halaman Ganti Password (tercatat di audit log).
+
+## 2026-10-27 — Redesain situs publik, Turnstile, login Google owner
+
+- Owner bisa daftar/login via Google.
+- Katalog dan detail jual beli, halaman Booking Berhasil mengikuti desain Stitch; admin Unit Dijual disesuaikan; crop foto katalog diperbaiki.
+- Cloudflare Turnstile di formulir Titip Jual, login admin, login owner, dan daftar owner.
+- Tanggal ditampilkan seragam `DD MMM YYYY`; skala tipografi situs publik disatukan dan font panel disamakan.
+- Invoice: Data Tamu dan Data Booking dirapikan.
+- Tombol Kirim Notifikasi WhatsApp di halaman Booking Berhasil dihapus.
+
 ## 2026-10-24 — UI panel admin & owner
 
 ### Layout panel (`layouts/panel.blade.php`)
@@ -53,7 +82,7 @@ Filter ikut terbawa saat pindah halaman (`withQueryString()`). Kartu statistik t
 - Setelah deploy file view, jalankan `php artisan view:clear` lalu `view:cache`.
 
 ## Isu yang diketahui
-- Pesan validasi tampil sebagai kunci (`validation.required`); folder `lang/` belum ada.
+- ~~Pesan validasi tampil sebagai kunci (`validation.required`)~~ — selesai 11 Nov (`lang/id`).
 - `redirect()->intended()` memakai satu session key untuk guard admin dan owner, sehingga login satu peran setelah mengunjungi halaman peran lain bisa mengarah ke halaman login yang salah.
 - Server dan repo sempat berbeda untuk form login admin (field `login`); sekarang sinkron dengan commit ini.
 - Notifikasi di header masih placeholder.

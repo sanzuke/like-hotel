@@ -1,5 +1,23 @@
 # Status & Progres Harian
 
+## 2026-11-11 (Rabu)
+
+**Status: ujicoba (belum production).** `main` sudah di-push (`b7f22dc`, 29 Okt). Pekerjaan hari ini ada di branch `terjemahan-validasi`, belum di-commit. Belum dipastikan apakah perubahan 27–29 Okt sudah di-deploy ke server.
+
+### Selesai sejak catatan 24 Okt
+- [x] 27 Okt: login/daftar owner via Google; katalog & detail jual beli, halaman Booking Berhasil, dan invoice mengikuti desain Stitch; Cloudflare Turnstile di Titip Jual, login admin/owner, daftar owner; format tanggal `DD MMM YYYY`; skala tipografi seragam; tombol notifikasi WhatsApp di Booking Berhasil dihapus.
+- [x] 29 Okt: halaman Ganti Password admin; optimasi SEO (URL berslug, robots/sitemap dinamis, judul & alt, kompresi gambar; panduan di `docs/SEO_CHECKLIST.md`); akun penyewa (daftar/login email + Google, booking wajib login, Booking Saya).
+- [x] 29 Okt: push ke remote.
+- [x] 11 Nov: terjemahan pesan validasi (`lang/id`: `validation`, `auth`, `pagination`, `passwords`) beserta nama kolom yang ramah dibaca; `.env.example` memakai locale `id`.
+- [x] 12 Nov: tombol Hapus di Kelola Apartment (admin) dan Unit Saya (owner); apartment dengan riwayat booking ditolak. Tes: 73 lolos. Belum dicek di browser (login lokal memakai Turnstile).
+
+### Belum
+- [ ] Commit, merge, dan deploy branch `terjemahan-validasi` (folder `lang/id` harus ikut disalin ke server).
+- [ ] Periksa `redirect()->intended()`: kini dipakai tiga guard (admin, owner, penyewa); isu salah arah dari 24 Okt belum dipastikan beres.
+- [ ] Data uji dan E2E alur booking publik, pembayaran Midtrans, dan pencairan owner (POST belum pernah diuji di server).
+- [ ] Notifikasi header panel: masih placeholder per 24 Okt, belum dicek ulang.
+- [ ] Pastikan server sinkron dengan `main`.
+
 ## 2026-10-24 (Sabtu)
 
 **Status: ujicoba (belum production).** Aplikasi berjalan di https://likehotel.zukelabs.web.id (VPS `zukelabs`, `/opt/likehotel`, `APP_ENV=production`, data uji). Kode repo dan server sama dengan commit `7b17371`; belum di-push ke remote.

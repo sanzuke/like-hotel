@@ -8,7 +8,7 @@
 
 <form id="owner-apartment-filter" method="get" action="{{ route('owner.apartments.index') }}"></form>
 <table class="table">
-  <tr><th>Foto</th><th>Nama</th><th>Lokasi</th><th>Tipe</th><th>Harga</th><th>Status</th></tr>
+  <tr><th>Foto</th><th>Nama</th><th>Lokasi</th><th>Tipe</th><th>Harga</th><th>Status</th><th>Aksi</th></tr>
   <tr class="filter-row">
     <td class="filter-actions">
       <button form="owner-apartment-filter" class="btn-outline">Cari</button>
@@ -29,6 +29,7 @@
         @foreach(['aktif' => 'Aktif', 'nonaktif' => 'Nonaktif / menunggu verifikasi', 'maintenance' => 'Maintenance'] as $v => $l)<option value="{{ $v }}" @selected(($filters['status'] ?? '') === $v)>{{ $l }}</option>@endforeach
       </select>
     </td>
+    <td></td>
   </tr>
   @forelse($apartments as $a)
     <tr>
@@ -38,9 +39,10 @@
       <td>{{ $a->type }}</td>
       <td>{{ \App\Support\Fmt::rupiah($a->price_per_night) }}</td>
       <td><b style="color:{{ \App\Support\Fmt::statusColor($a->status) }}">{{ $a->status === 'nonaktif' ? 'menunggu verifikasi' : $a->status }}</b></td>
+      <td><form class="inline-form" method="post" action="{{ route('owner.apartments.destroy', $a) }}" onsubmit="return confirm('Hapus unit ini beserta fotonya?')">@csrf @method('DELETE')<button class="btn-outline">Hapus</button></form></td>
     </tr>
   @empty
-    <tr><td colspan="6" style="text-align:center;color:#6b7280">
+    <tr><td colspan="7" style="text-align:center;color:#6b7280">
       @if(array_filter($filters))Tidak ada data yang cocok dengan filter. <a href="{{ route('owner.apartments.index') }}" style="color:#087a35;font-weight:700">Reset filter</a>
       @else Belum ada unit. Klik "Tambah Unit" untuk menambahkan.@endif
     </td></tr>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
+use App\Models\Apartment;
+use App\Support\Audit;
 use App\Support\ImageStore;
 use App\Support\TableFilter;
 use Illuminate\Http\Request;
@@ -64,5 +66,26 @@ class ApartmentController extends Controller
         }
 
         return back()->with('success', 'Unit berhasil dikirim. Unit akan tampil setelah diaktifkan admin.');
+    }
+
+    public function destroy(Apartment $apartment)
+    {
+        // Owner hanya boleh menghapus unit miliknya sendiri.
+        abort_unless($apartment->owner_id === auth('owner')->id(), 404);
+
+        // Riwayat booking, pembayaran, dan pencairan merujuk ke unit ini; jangan sampai ikut hilang.
+        if ($apartment->bookings()->exists()) {
+            return back()->with('error', "Unit \"{$apartment->name}\" tidak bisa dihapus karena sudah memiliki riwayat booking. Hubungi admin untuk menonaktifkannya.");
+        }
+
+        $files = $apartment->images->pluck('image')->push($apartment->image)->filter()->unique();
+        Audit::log('apartment.deleted', "Apartment \"{$apartment->name}\" dihapus oleh owner", $apartment);
+        $apartment->delete();
+
+        foreach ($files as $file) {
+            ImageStore::delete($file, 'apartments');
+        }
+
+        return redirect()->route('owner.apartments.index')->with('success', 'Unit dihapus.');
     }
 }
