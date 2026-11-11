@@ -75,6 +75,7 @@ class GuestGoogleController extends Controller
 
         if (! $guest) {
             $guest = Guest::create(['name' => $profile['name'] ?? $email, 'email' => $email, 'google_id' => $sub]);
+            $guest->markEmailAsVerified(); // email sudah diverifikasi Google
             Audit::log('guest.registered', "Penyewa baru mendaftar via Google: {$guest->name} ({$guest->email})", $guest, [], ['type' => 'guest', 'name' => $guest->name]);
         } elseif (! $guest->google_id) {
             $guest->update(['google_id' => $sub]);

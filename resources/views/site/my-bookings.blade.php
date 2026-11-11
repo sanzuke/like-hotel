@@ -14,6 +14,12 @@
 
   @if(session('success'))<div class="alert">{{ session('success') }}</div>@endif
   @if($errors->any())<div class="alert danger">{{ $errors->first() }}</div>@endif
+  @unless($guest->hasVerifiedEmail())
+    <div class="alert warn">
+      <b>Email belum diverifikasi.</b> Verifikasi <b>{{ $guest->email }}</b> agar booking lama Anda dengan email ini otomatis tertaut ke akun.
+      <form method="post" action="{{ route('guest.verify.resend') }}" style="margin-top:8px">@csrf<button class="btn-outline">Kirim ulang email verifikasi</button></form>
+    </div>
+  @endunless
 
   <div class="mb-grid">
     <div class="mb-list">

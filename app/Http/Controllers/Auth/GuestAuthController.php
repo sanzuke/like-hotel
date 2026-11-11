@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 /** Daftar / login / logout akun penyewa. Akun langsung aktif (tanpa persetujuan admin). */
 class GuestAuthController extends Controller
@@ -73,7 +74,14 @@ class GuestAuthController extends Controller
         Auth::guard('guest')->login($guest);
         $request->session()->regenerate();
 
-        return redirect()->intended(route('guest.bookings'));
+        try {
+            $guest->sendEmailVerification();
+        } catch (Throwable $e) {
+            report($e); // gagal kirim email tidak boleh menggagalkan pendaftaran
+        }
+
+        return redirect()->intended(route('guest.bookings'))
+            ->with('success', 'Akun dibuat. Kami mengirim email verifikasi untuk menautkan booking lama Anda.');
     }
 
     public function logout(Request $request): RedirectResponse
