@@ -44,7 +44,7 @@
       <td>{{ $a->name }}</td>
       <td>{{ $a->owner_name }}</td>
       <td>{{ $a->location }}</td>
-      <td>{{ $a->type }}</td>
+      <td>{{ $a->categoryLabel() }} &middot; {{ $a->type }}</td>
       <td>{{ \App\Support\Fmt::rupiah($a->price_per_night) }}</td>
       <td>{{ $a->status }}</td>
       <td>
@@ -72,6 +72,10 @@
     </select>
     <label>Nama Apartment</label><input name="name" value="{{ old('name') }}" required>
     <label>Lokasi</label><input name="location" value="{{ old('location') }}" required>
+    <label>Kategori</label>
+    <select name="category" required>
+      @foreach(\App\Models\Apartment::CATEGORIES as $v => $l)<option value="{{ $v }}" @selected(old('category', 'apartment') === $v)>{{ $l }}</option>@endforeach
+    </select>
     <label>Tipe</label><input name="type" value="{{ old('type') }}" placeholder="Studio / 1 Bedroom / 2 Bedroom" required>
     <label>Harga per Malam</label><input type="number" min="0" name="price_per_night" value="{{ old('price_per_night') }}" required>
     <label>Fasilitas</label><textarea name="facilities" placeholder="AC, WiFi, TV, Parkir">{{ old('facilities') }}</textarea>

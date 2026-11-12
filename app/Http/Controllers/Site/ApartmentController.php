@@ -20,6 +20,7 @@ class ApartmentController extends Controller
     {
         $f = $request->validate([
             'q' => 'nullable|string|max:100',
+            'category' => 'nullable|in:apartment,hotel',
             'type' => 'nullable|string|max:80',
             'checkin' => 'nullable|date_format:Y-m-d|after_or_equal:today',
             'checkout' => 'nullable|date_format:Y-m-d|required_with:checkin|after:checkin',
@@ -32,6 +33,7 @@ class ApartmentController extends Controller
                 $like = '%'.str_replace(['%', '_'], ['\%', '\_'], $q).'%';
                 $query->where(fn ($w) => $w->where('name', 'like', $like)->orWhere('location', 'like', $like));
             })
+            ->when($f['category'] ?? null, fn ($query, $c) => $query->where('category', $c))
             ->when($f['type'] ?? null, fn ($query, $t) => $query->where('type', $t))
             ->when($f['max_price'] ?? null, fn ($query, $p) => $query->where('price_per_night', '<=', $p))
             // Hanya unit yang kosong di seluruh rentang tanggal yang dipilih.
@@ -51,6 +53,7 @@ class ApartmentController extends Controller
             'apartments' => $apartments->get(),
             'filters' => $f,
             'types' => Apartment::active()->distinct()->orderBy('type')->pluck('type'),
+            'categories' => Apartment::CATEGORIES,
         ]);
     }
 

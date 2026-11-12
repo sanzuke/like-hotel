@@ -3,8 +3,8 @@
 @section('title', 'Daftar Akun - Like Hotel')
 @section('content')
 <div class="form-box">
-  <h2>Daftar Akun Penyewa</h2>
-  <p class="muted">Satu akun untuk semua booking. Data tamu terisi otomatis dan invoice tersimpan.</p>
+  <h2>Daftar Akun</h2>
+  <p class="muted">Satu akun untuk menyewa, menyewakan unit, dan titip jual. Ingin menyewakan? Setelah daftar, aktifkan mode pemilik dari halaman Akun.</p>
   <form method="post" action="{{ route('guest.register.submit') }}">
     @csrf
     <label>Nama Lengkap</label>

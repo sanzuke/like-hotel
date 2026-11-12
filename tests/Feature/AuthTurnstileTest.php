@@ -24,9 +24,12 @@ class AuthTurnstileTest extends TestCase
     public function test_widget_is_rendered_on_all_auth_forms_when_enabled(): void
     {
         $this->enable();
-        foreach (['admin.login', 'owner.login', 'owner.register', 'sale-request.create'] as $route) {
+        foreach (['admin.login', 'owner.login', 'owner.register'] as $route) {
             $this->get(route($route))->assertOk()->assertSee('cf-turnstile', false);
         }
+
+        $this->loginGuest(['email' => 'form@example.com']);
+        $this->get(route('sale-request.create'))->assertOk()->assertSee('cf-turnstile', false);
     }
 
     public function test_admin_login_requires_valid_token(): void

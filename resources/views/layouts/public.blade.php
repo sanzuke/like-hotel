@@ -70,7 +70,7 @@
       @endforeach
       <a href="{{ $wa }}" class="wa-pill" target="_blank" rel="noopener"><i class="ms">chat</i> Chat WA</a>
       @auth('guest')
-        <a href="{{ route('guest.bookings') }}" class="btn-outline"><i class="ms">person</i> {{ \Illuminate\Support\Str::words(auth('guest')->user()->name, 1, '') }}</a>
+        <a href="{{ route('account.index') }}" class="btn-outline"><i class="ms">person</i> {{ \Illuminate\Support\Str::words(auth('guest')->user()->name, 1, '') }}</a>
       @else
         <a href="{{ route('guest.login') }}" class="btn-outline">Masuk</a>
       @endauth
@@ -83,7 +83,7 @@
 @yield('content')
 
 <div class="footer no-print">
-  <nav aria-label="Tautan footer"><a href="{{ route('apartments.index') }}">Sewa Apartment</a> &middot; <a href="{{ route('sale-units.index') }}">Jual Beli Apartment</a> &middot; <a href="{{ route('sale-request.create') }}">Titip Jual</a> &middot; <a href="{{ route('booking.check') }}">Cek Booking</a> &middot; <a href="{{ route('owner.login') }}" rel="nofollow">Login Owner</a></nav>
+  <nav aria-label="Tautan footer"><a href="{{ route('apartments.index') }}">Sewa Apartment</a> &middot; <a href="{{ route('sale-units.index') }}">Jual Beli Apartment</a> &middot; <a href="{{ route('sale-request.create') }}">Titip Jual</a> &middot; <a href="{{ route('booking.check') }}">Cek Booking</a> &middot; @auth('guest')<a href="{{ route('account.index') }}">Akun Saya</a>@else<a href="{{ route('guest.login') }}">Masuk / Daftar</a>@endauth</nav>
   <b>Like Hotel Sewa Apartment Dekat</b><br>
   WhatsApp: {{ \App\Support\Fmt::adminWaDisplay() }}
   <div class="foot-badges"><span>QRIS</span><span>Virtual Account</span><span>Midtrans</span></div>
@@ -98,7 +98,7 @@
   @foreach($navItems as [$route, $pattern, $label, $icon, $short])
     <a href="{{ route($route) }}" @class(['on' => request()->routeIs($pattern)])><i class="ms">{{ $icon }}</i>{{ $short }}</a>
   @endforeach
-  <a href="{{ auth('guest')->check() ? route('guest.bookings') : route('guest.login') }}" @class(['on' => request()->routeIs('guest.*')])><i class="ms">person</i>{{ auth('guest')->check() ? 'Akun' : 'Masuk' }}</a>
+  <a href="{{ auth('guest')->check() ? route('account.index') : route('guest.login') }}" @class(['on' => request()->routeIs('account.*', 'guest.*')])><i class="ms">person</i>{{ auth('guest')->check() ? 'Akun' : 'Masuk' }}</a>
 </nav>
 
 @stack('scripts')

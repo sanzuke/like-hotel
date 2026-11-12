@@ -3,6 +3,7 @@
 @section('content')
 <div class="form-box">
   <h2>Login Owner Apartment</h2>
+  <div class="alert">Satu akun untuk semua peran. Baru di sini? <a href="{{ route('guest.register') }}">Daftar akun utama</a>, lalu aktifkan mode pemilik dari halaman akun.</div>
   @if(session('success'))<div class="alert">{{ session('success') }}</div>@endif
   @if($errors->any())<div class="alert danger">{{ $errors->first() }}</div>@endif
   <form method="post" action="{{ route('owner.login.submit') }}">

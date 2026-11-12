@@ -131,7 +131,7 @@ class GuestAccountTest extends TestCase
         $this->get(route('home'))->assertOk()->assertSee('>Masuk</a>', false);
 
         $this->loginGuest(['name' => 'Siti Aminah']);
-        $this->get(route('home'))->assertOk()->assertSee('Siti')->assertSee(route('guest.bookings'), false);
+        $this->get(route('home'))->assertOk()->assertSee('Siti')->assertSee(route('account.index'), false);
     }
 
     private function googleCallback(array $profile)

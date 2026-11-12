@@ -14,6 +14,10 @@
     </select>
     <label>Nama Apartment</label><input name="name" value="{{ old('name', $apt->name) }}" required>
     <label>Lokasi</label><input name="location" value="{{ old('location', $apt->location) }}" required>
+    <label>Kategori</label>
+    <select name="category" required>
+      @foreach(\App\Models\Apartment::CATEGORIES as $v => $l)<option value="{{ $v }}" @selected(old('category', $apt->category) === $v)>{{ $l }}</option>@endforeach
+    </select>
     <label>Tipe</label><input name="type" value="{{ old('type', $apt->type) }}" required>
     <label>Harga per Malam</label><input type="number" min="0" name="price_per_night" value="{{ old('price_per_night', (int) $apt->price_per_night) }}" required>
     <label>Fasilitas</label><textarea name="facilities">{{ old('facilities', $apt->facilities) }}</textarea>

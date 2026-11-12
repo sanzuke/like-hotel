@@ -16,8 +16,14 @@ class Apartment extends Model
         return $this->name.' '.$this->type;
     }
 
+    /** Kategori unit. Tipe kamar (Studio, 1 Bedroom, dst.) tetap di kolom type. */
+    public const CATEGORIES = [
+        'apartment' => 'Apartemen',
+        'hotel' => 'Hotel',
+    ];
+
     protected $fillable = [
-        'owner_id', 'owner_name', 'name', 'location', 'type',
+        'owner_id', 'owner_name', 'name', 'location', 'type', 'category',
         'price_per_night', 'facilities', 'description', 'image', 'status',
     ];
 
@@ -44,5 +50,10 @@ class Apartment extends Model
     public function scopeActive($query)
     {
         return $query->where('status', 'aktif');
+    }
+
+    public function categoryLabel(): string
+    {
+        return self::CATEGORIES[$this->category] ?? self::CATEGORIES['apartment'];
     }
 }

@@ -3,6 +3,7 @@
 @section('content')
 <div class="form-box">
   <h2>Daftar Owner Apartment</h2>
+  <div class="alert">Satu akun untuk semua peran. Disarankan <a href="{{ route('guest.register') }}">daftar akun utama</a> lalu aktifkan mode pemilik — tanpa perlu akun terpisah.</div>
   <div class="alert">Akun baru akan aktif setelah disetujui admin Like Hotel.</div>
   <form method="post" action="{{ route('owner.register.submit') }}">
     @csrf

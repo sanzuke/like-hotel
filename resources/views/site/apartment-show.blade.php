@@ -52,6 +52,7 @@
       <span class="badge"><i class="ms">verified</i> Unit Terverifikasi</span>
       <span class="badge"><i class="ms">shield_person</i> Owner Terpercaya</span>
       <span class="badge">{{ $a->type }}</span>
+      <span class="badge">{{ $a->categoryLabel() }}</span>
     </div>
     <h1>{{ $a->name }}</h1>
     <p class="pd-loc"><i class="ms">pin_drop</i> {{ $a->location }}</p>

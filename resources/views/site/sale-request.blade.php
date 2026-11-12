@@ -1,16 +1,17 @@
 @extends('layouts.public')
+@section('robots', 'noindex,nofollow')
 @section('title', 'Titip Jual Apartemen - Like Hotel')
 @section('meta_description', 'Titipkan apartemen Anda ke Like Hotel. Kami bantu pemasaran, survei, hingga transaksi dengan proses transparan.')
 @section('content')
 <div class="form-box">
   <h2>Titip Jual Apartment</h2>
-  <p class="muted">Isi data unit Anda. Tim Like Hotel akan menghubungi untuk survei dan penawaran.</p>
-  @if(session('success'))<div class="alert">{{ session('success') }}</div>@endif
+  <p class="muted">Isi data unit Anda. Tim Like Hotel akan menghubungi untuk survei dan penawaran. Diajukan sebagai <b>{{ $guest->email }}</b>.</p>
+  @if(session('error'))<div class="alert danger">{{ session('error') }}</div>@endif
   @if($errors->any())<div class="alert danger">@foreach($errors->all() as $e){{ $e }}<br>@endforeach</div>@endif
   <form method="post" action="{{ route('sale-request.store') }}">
     @csrf
-    <label>Nama Pemilik</label><input name="owner_name" value="{{ old('owner_name') }}" placeholder="Nama lengkap pemilik unit" required>
-    <label>No WhatsApp</label><input name="owner_phone" value="{{ old('owner_phone') }}" placeholder="Contoh: 082129248953" required>
+    <label>Nama Pemilik</label><input name="owner_name" value="{{ old('owner_name', $guest->name) }}" placeholder="Nama lengkap pemilik unit" required>
+    <label>No WhatsApp</label><input name="owner_phone" value="{{ old('owner_phone', $guest->phone) }}" placeholder="Contoh: 082129248953" required>
     <label>Nama Apartment</label><input name="apartment_name" value="{{ old('apartment_name') }}" placeholder="Contoh: Easton Park Residence" required>
     <label>Lokasi</label><input name="location" value="{{ old('location') }}" placeholder="Contoh: Jatinangor - Bandung" required>
     <label>Tipe Unit</label><input name="unit_type" value="{{ old('unit_type') }}" placeholder="Studio / 1 Bedroom / 2 Bedroom">
@@ -20,5 +21,6 @@
     @include('partials.turnstile')
     <button class="btn">Kirim Pengajuan</button>
   </form>
+  <p class="muted" style="margin-top:14px"><a href="{{ route('account.sale-requests') }}">Lihat pengajuan saya</a> &middot; <a href="{{ route('account.index') }}">Kembali ke akun</a></p>
 </div>
 @endsection

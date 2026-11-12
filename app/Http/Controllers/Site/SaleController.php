@@ -68,11 +68,13 @@ class SaleController extends Controller
 
     public function requestForm()
     {
-        return view('site.sale-request');
+        return view('site.sale-request', ['guest' => auth('guest')->user()]);
     }
 
     public function requestStore(Request $request)
     {
+        $guest = auth('guest')->user();
+
         $data = $request->validate([
             'owner_name' => 'required|string|max:150',
             'owner_phone' => ['required', 'string', 'max:50', 'regex:/^[0-9+\s\-]{8,}$/'],
@@ -85,11 +87,11 @@ class SaleController extends Controller
             'cf-turnstile-response' => [new Turnstile],
         ], ['owner_phone.regex' => 'Nomor WhatsApp tidak valid.']);
 
-        $lead = SaleRequest::create($data + ['status' => 'baru']);
-        $lead->hasMany(\App\Models\SaleRequestNote::class)->create(['type' => 'catatan', 'body' => 'Pengajuan masuk dari formulir situs.', 'author' => 'Sistem']);
-        Audit::log('crm.lead_created', "Lead titip jual baru: {$lead->owner_name} ({$lead->apartment_name})", $lead, [], ['type' => 'guest', 'name' => $lead->owner_name]);
+        $lead = SaleRequest::create($data + ['status' => 'baru', 'guest_id' => $guest->id]);
+        $lead->hasMany(\App\Models\SaleRequestNote::class)->create(['type' => 'catatan', 'body' => "Pengajuan masuk dari akun {$guest->email}.", 'author' => 'Sistem']);
+        Audit::log('crm.lead_created', "Lead titip jual baru: {$lead->owner_name} ({$lead->apartment_name})", $lead, [], ['type' => 'guest', 'id' => $guest->id, 'name' => $guest->name]);
 
-        return redirect()->route('sale-request.create')
-            ->with('success', 'Pengajuan titip jual berhasil dikirim. Tim Like Hotel akan menghubungi Anda.');
+        return redirect()->route('account.sale-requests')
+            ->with('success', 'Pengajuan titip jual berhasil dikirim. Pantau statusnya di halaman ini.');
     }
 }

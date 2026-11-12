@@ -22,7 +22,7 @@ class SaleRequest extends Model
     ];
 
     protected $fillable = [
-        'owner_name', 'owner_phone', 'apartment_name', 'location', 'unit_type',
+        'guest_id', 'owner_name', 'owner_phone', 'apartment_name', 'location', 'unit_type',
         'size', 'expected_price', 'agreed_price', 'last_offer', 'notes', 'status', 'survey_at', 'sale_unit_id',
     ];
 
@@ -34,6 +34,12 @@ class SaleRequest extends Model
             'last_offer' => 'decimal:2',
             'survey_at' => 'datetime',
         ];
+    }
+
+    /** Akun pengaju titip jual (null untuk lead lama dari formulir anonim). */
+    public function guest(): BelongsTo
+    {
+        return $this->belongsTo(Guest::class);
     }
 
     public function timeline(): HasMany

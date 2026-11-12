@@ -6,6 +6,7 @@ use App\Models\Admin;
 use App\Models\Apartment;
 use App\Models\AuditLog;
 use App\Models\Booking;
+use App\Models\Guest;
 use App\Models\SaleRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -21,6 +22,10 @@ class AuditAndCrmTest extends TestCase
 
     private function lead(): SaleRequest
     {
+        if (! Guest::where('email', 'tamu@example.com')->exists()) {
+            $this->loginGuest();
+        }
+
         $this->post(route('sale-request.store'), [
             'owner_name' => 'Pak Fahri', 'owner_phone' => '081234567890', 'apartment_name' => 'Easton Park',
             'location' => 'Jatinangor', 'unit_type' => 'Studio', 'size' => '24 m2', 'expected_price' => 350000000,

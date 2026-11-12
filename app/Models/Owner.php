@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class Owner extends Authenticatable
@@ -16,6 +17,12 @@ class Owner extends Authenticatable
     protected function casts(): array
     {
         return ['password' => 'hashed'];
+    }
+
+    /** Akun utama (guest) yang menautkan profil pemilik ini. */
+    public function guest(): HasOne
+    {
+        return $this->hasOne(Guest::class);
     }
 
     public function apartments(): HasMany

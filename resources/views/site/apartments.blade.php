@@ -7,7 +7,7 @@
   <h1>Daftar Apartment Siap Sewa</h1>
   <p>Temukan unit harian, mingguan, dan bulanan dengan harga transparan dan invoice otomatis.</p>
 
-  @include('site._search', ['filters' => $filters, 'types' => $types, 'advanced' => true])
+  @include('site._search', ['filters' => $filters, 'types' => $types, 'categories' => $categories ?? \App\Models\Apartment::CATEGORIES, 'advanced' => true])
 </section>
 
 <section class="section">

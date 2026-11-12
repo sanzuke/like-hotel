@@ -3,12 +3,16 @@
 namespace App\Models;
 
 use App\Notifications\VerifyGuestEmail;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\URL;
 
-/** Akun penyewa: wajib untuk membuat booking, menyimpan riwayat booking dan invoice. */
+/**
+ * Akun utama untuk semua peran: penyewa, pemilik unit sewa, dan penjual/titip jual.
+ * Profil pemilik dibuat saat pengguna mengaktifkan mode pemilik (lihat owner()).
+ */
 class Guest extends Authenticatable
 {
     use Notifiable;
@@ -25,6 +29,22 @@ class Guest extends Authenticatable
     public function bookings(): HasMany
     {
         return $this->hasMany(Booking::class);
+    }
+
+    /** Profil pemilik yang ditautkan; null bila pengguna belum mengaktifkan mode pemilik. */
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(Owner::class);
+    }
+
+    public function isOwner(): bool
+    {
+        return $this->owner_id !== null;
+    }
+
+    public function saleRequests(): HasMany
+    {
+        return $this->hasMany(SaleRequest::class);
     }
 
     public function hasVerifiedEmail(): bool

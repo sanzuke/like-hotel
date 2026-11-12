@@ -15,6 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         // Keamanannya dijaga lewat verifikasi signature di controller.
         $middleware->validateCsrfTokens(except: ['midtrans/notification']);
 
+        $middleware->alias([
+            'owner.profile' => \App\Http\Middleware\EnsureOwnerProfile::class,
+        ]);
+
         $middleware->redirectGuestsTo(function ($request) {
             if ($request->is('admin/*') || $request->is('admin')) {
                 return route('admin.login');

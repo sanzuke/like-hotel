@@ -7,9 +7,9 @@
     @if($a->image)
       <img src="{{ asset('storage/apartments/'.$a->image) }}" class="card-photo" alt="{{ \App\Support\Seo::alt('Sewa apartemen', $a->name, $a->type, 'di', $a->location) }}" width="640" height="420" loading="lazy" decoding="async">
     @else
-      <div class="card-img card-img-modern"><span>LIKE HOTEL</span><b>Apartment</b></div>
+      <div class="card-img card-img-modern"><span>LIKE HOTEL</span><b>{{ $a->categoryLabel() }}</b></div>
     @endif
-    <span class="tag">{{ $a->type }}</span>
+    <span class="tag">{{ $a->categoryLabel() }} &middot; {{ $a->type }}</span>
     <span class="rate"><i class="ms">star</i> 4.8</span>
   </div>
   <div class="card-body">

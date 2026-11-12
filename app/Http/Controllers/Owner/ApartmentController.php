@@ -44,6 +44,7 @@ class ApartmentController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:180',
             'location' => 'required|string|max:180',
+            'category' => 'required|in:apartment,hotel',
             'type' => 'required|string|max:80',
             'price_per_night' => 'required|numeric|min:0',
             'facilities' => 'nullable|string',

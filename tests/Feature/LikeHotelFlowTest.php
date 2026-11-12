@@ -163,7 +163,7 @@ class LikeHotelFlowTest extends TestCase
 
         $bank = ['bank_name' => 'BCA', 'bank_account_name' => 'Owner A', 'bank_account_number' => '123'];
 
-        $this->post(route('owner.settlements.store'), $bank + ['amount' => 1000])->assertRedirect(route('owner.login'));
+        $this->post(route('owner.settlements.store'), $bank + ['amount' => 1000])->assertRedirect(route('owner.activate'));
 
         $this->actingAs($owner, 'owner');
         $this->post(route('owner.settlements.store'), $bank + ['amount' => 600000])->assertSessionHasErrors('amount');

@@ -40,6 +40,10 @@ Route::middleware('guest:guest')->group(function () {
 });
 Route::middleware('auth:guest')->group(function () {
     Route::post('/keluar', [GuestAuthController::class, 'logout'])->name('guest.logout');
+    Route::get('/akun', [Site\AccountController::class, 'index'])->name('account.index');
+    Route::get('/akun/pemilik', [Site\AccountController::class, 'ownerCreate'])->name('owner.activate');
+    Route::post('/akun/pemilik', [Site\AccountController::class, 'ownerStore'])->name('owner.activate.store');
+    Route::get('/akun/titip-jual', [Site\AccountController::class, 'saleRequests'])->name('account.sale-requests');
     Route::get('/akun/booking', [Site\MyBookingsController::class, 'index'])->name('guest.bookings');
     Route::get('/akun/verifikasi-email/{id}/{hash}', [GuestVerificationController::class, 'verify'])
         ->middleware(['signed', 'throttle:10,1'])->name('guest.verify');
@@ -66,9 +70,13 @@ Route::post('/midtrans/notification', [Site\MidtransController::class, 'notifica
 
 Route::get('/jual-beli', [Site\SaleController::class, 'index'])->name('sale-units.index');
 Route::get('/jual-beli/{saleUnit}', [Site\SaleController::class, 'show'])->name('sale-units.show');
-Route::get('/titip-jual', [Site\SaleController::class, 'requestForm'])->name('sale-request.create');
-Route::post('/titip-jual', [Site\SaleController::class, 'requestStore'])
-    ->middleware('throttle:5,1')->name('sale-request.store');
+
+// Titip jual hanya untuk akun terdaftar, agar pengaju bisa memantau statusnya.
+Route::middleware('auth:guest')->group(function () {
+    Route::get('/titip-jual', [Site\SaleController::class, 'requestForm'])->name('sale-request.create');
+    Route::post('/titip-jual', [Site\SaleController::class, 'requestStore'])
+        ->middleware('throttle:5,1')->name('sale-request.store');
+});
 
 /*
 | Owner
@@ -83,7 +91,7 @@ Route::prefix('owner')->name('owner.')->group(function () {
         Route::get('/auth/google/callback', [OwnerGoogleController::class, 'callback'])->middleware('throttle:10,1')->name('google.callback');
     });
 
-    Route::middleware('auth:owner')->group(function () {
+    Route::middleware(['auth:owner,guest', 'owner.profile'])->group(function () {
         Route::post('/logout', [OwnerAuthController::class, 'logout'])->name('logout');
         Route::get('/', Owner\DashboardController::class)->name('dashboard');
         Route::get('/apartments', [Owner\ApartmentController::class, 'index'])->name('apartments.index');

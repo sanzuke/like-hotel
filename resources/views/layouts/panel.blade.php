@@ -54,6 +54,8 @@
         ['owner.apartments.index', 'Unit Saya', 'building'],
         ['owner.bookings.index', 'Booking Unit Saya', 'calendar'],
         ['owner.settlements.index', 'Pencairan Dana', 'wallet'],
+        ['account.sale-requests', 'Titip Jual Saya', 'clipboard'],
+        ['account.index', 'Akun Saya', 'user'],
     ];
     $icon = fn (string $name) => '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">'.$icons[$name].'</svg>';
 @endphp

@@ -11,6 +11,13 @@ class TitipJualTurnstileTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // Titip jual hanya untuk akun terdaftar.
+        $this->loginGuest();
+    }
+
     private function payload(array $extra = []): array
     {
         return $extra + [

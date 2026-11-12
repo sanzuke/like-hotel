@@ -4,7 +4,7 @@
 @section('content')
 <div class="form-box">
   <h2>Masuk ke Akun Anda</h2>
-  <p class="muted">Masuk untuk booking apartemen, melihat riwayat, dan mengakses invoice.</p>
+  <p class="muted">Masuk untuk booking, memantau titip jual, atau mengelola unit yang Anda sewakan.</p>
   @if(session('success'))<div class="alert">{{ session('success') }}</div>@endif
   @if(str_contains((string) session('url.intended'), '/booking'))<div class="alert warn">Masuk atau daftar dulu untuk melanjutkan booking.</div>@endif
   @if($errors->any())<div class="alert danger">{{ $errors->first() }}</div>@endif
@@ -19,6 +19,6 @@
     <a class="btn-outline" href="{{ route('guest.register') }}">Daftar Akun</a>
   </form>
   @include('auth.partials.google-button', ['label' => 'Masuk dengan Google', 'href' => route('guest.google.redirect')])
-  <p class="muted" style="margin-top:18px;font-size:13px">Pemilik apartemen? <a href="{{ route('owner.login') }}">Login Owner</a></p>
+  <p class="muted" style="margin-top:18px;font-size:13px">Pemilik unit? Masuk dengan akun ini, lalu pilih <b>Aktifkan Mode Pemilik</b> di halaman Akun. Akun owner lama tetap bisa <a href="{{ route('owner.login') }}">login di sini</a>.</p>
 </div>
 @endsection

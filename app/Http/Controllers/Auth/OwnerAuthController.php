@@ -81,10 +81,14 @@ class OwnerAuthController extends Controller
 
     public function logout(Request $request): RedirectResponse
     {
+        $guestWasLoggedIn = Auth::guard('guest')->check();
+
+        // Satu akun: keluar dari dashboard pemilik juga mengakhiri sesi akun utama.
         Auth::guard('owner')->logout();
+        Auth::guard('guest')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('owner.login');
+        return redirect()->route($guestWasLoggedIn ? 'guest.login' : 'owner.login');
     }
 }

@@ -1,5 +1,28 @@
 # Status & Progres Harian
 
+## 2026-11-12 (Kamis)
+
+**Status: live di https://likehotelapartemen.com.** cPanel + LiteSpeed, PHP 8.3, database `likehote_likehotel` terhubung (25 tabel, 16 migrasi, 1 admin). Data bisnis masih kosong.
+
+### Selesai
+- [x] Deploy kode branch `terjemahan-validasi` (termasuk perubahan yang belum di-commit) ke domain utama.
+- [x] PHP domain dinaikkan 8.1 → 8.3 lewat CloudLinux PHP Selector (Laravel 13 butuh ^8.3).
+- [x] Webroot dirapikan: backup lama di `~/public_html.bak-*`, `.htaccess` root (rewrite ke `public/`, paksa HTTPS, blokir `.env`) kini tersimpan di repo.
+- [x] Deploy otomatis `deploy.ps1` + `scripts/deploy-remote.sh`: backup, swap, composer, migrate, cache, health check, rollback otomatis.
+- [x] Cron `schedule:run` aktif (auto-expire booking pending).
+- [x] Gap alur bisnis dicatat di `../docs/GAP_ALUR_BISNIS.md`.
+- [x] **Akun tunggal**: semua peran daftar lewat `/daftar`; profil pemilik diaktifkan dari `/akun/pemilik` (kolom `guests.owner_id`), dashboard owner terbuka tanpa akun kedua.
+- [x] **Titip jual wajib akun**: `/titip-jual` login dulu, pengajuan tersimpan dengan `guest_id`, status dipantau di `/akun/titip-jual`.
+- [x] **Kategori Hotel/Apartemen**: kolom `apartments.category`, filter di pencarian, pilihan kategori di form owner & admin.
+- [x] Tes: 88 lolos (660 assertion); deploy produksi 12 Nov 2026, migrasi kolom baru berhasil, health check 200.
+
+### Belum
+- [ ] Owner upload foto unit titip jual sendiri (sekarang masih lewat admin).
+- [ ] Import data lama `Reff/likehotel_db.sql` ke database produksi (masih kosong).
+- [ ] Midtrans masih sandbox; email masih `MAIL_MAILER=log`.
+- [ ] Uji E2E di server: daftar → aktifkan pemilik → tambah unit → titip jual → booking + pembayaran.
+- [ ] Hapus/alihtautkan login owner lama setelah data lama diimpor. Detail keputusan di `../docs/GAP_ALUR_BISNIS.md`.
+
 ## 2026-11-11 (Rabu)
 
 **Status: ujicoba (belum production).** `main` sudah di-push (`b7f22dc`, 29 Okt). Pekerjaan hari ini ada di branch `terjemahan-validasi`, belum di-commit. Belum dipastikan apakah perubahan 27–29 Okt sudah di-deploy ke server.
