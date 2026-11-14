@@ -6,6 +6,7 @@ use App\Models\Apartment;
 use App\Models\Booking;
 use App\Models\Promo;
 use App\Support\Audit;
+use App\Support\Commission;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -81,7 +82,7 @@ class BookingService
             }
 
             $total = $subtotal - $discount;
-            $commission = round($total * config('likehotel.commission_rate'));
+            $commission = round($total * Commission::rentRate());
             $code = $this->uniqueCode();
 
             $booking = Booking::create([

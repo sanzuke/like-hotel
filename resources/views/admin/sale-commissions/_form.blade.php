@@ -7,6 +7,6 @@
   <option value="percent" @selected($v('commission_type', 'percent') === 'percent')>Persen (%)</option>
   <option value="fixed" @selected($v('commission_type') === 'fixed')>Nominal Rupiah</option>
 </select>
-<label>Nilai Komisi</label><input type="number" step="any" min="0" name="commission_value" value="{{ isset($r) ? old('commission_value', (float) $r->commission_value) : old('commission_value', config('likehotel.sale_commission_percent')) }}" required>
+<label>Nilai Komisi</label><input type="number" step="any" min="0" name="commission_value" value="{{ isset($r) ? old('commission_value', (float) $r->commission_value) : old('commission_value', \App\Support\Commission::salePercent()) }}" required>
 <label>Biaya Lain (pajak, dll.)</label><input type="number" min="0" name="other_cost" value="{{ isset($r) ? old('other_cost', (int) $r->other_cost) : old('other_cost', 0) }}">
 <label>Catatan</label><textarea name="notes">{{ $v('notes') }}</textarea>

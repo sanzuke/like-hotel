@@ -112,7 +112,7 @@
           <label>Harga Deal</label><input type="number" min="1" name="deal_price" value="{{ old('deal_price', $suggestedDeal ? (int) $suggestedDeal : '') }}" required>
           <label>Tipe Komisi</label>
           <select name="commission_type"><option value="percent" @selected(old('commission_type', 'percent') === 'percent')>Persen (%)</option><option value="fixed" @selected(old('commission_type') === 'fixed')>Nominal Rupiah</option></select>
-          <label>Nilai Komisi</label><input type="number" step="any" min="0" name="commission_value" value="{{ old('commission_value', config('likehotel.sale_commission_percent')) }}" required>
+          <label>Nilai Komisi</label><input type="number" step="any" min="0" name="commission_value" value="{{ old('commission_value', \App\Support\Commission::salePercent()) }}" required>
           <label>Biaya Lain</label><input type="number" min="0" name="other_cost" value="{{ old('other_cost', 0) }}">
           <label>Catatan</label><textarea name="notes">{{ old('notes') }}</textarea>
           <button class="btn">Catat Closing</button>

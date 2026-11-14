@@ -145,6 +145,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/promos/{promo}', [Admin\PromoController::class, 'destroy'])->name('promos.destroy');
 
         Route::get('/komisi', [Admin\SettlementController::class, 'commission'])->name('commission');
+        Route::put('/komisi', [Admin\CommissionSettingController::class, 'update'])->name('commission.update');
         Route::get('/settlements', [Admin\SettlementController::class, 'index'])->name('settlements.index');
         Route::post('/settlements/owners/{owner}/pay', [Admin\SettlementController::class, 'payOwner'])->name('settlements.pay-owner');
         Route::post('/settlements/{settlement}/approve', [Admin\SettlementController::class, 'approve'])->name('settlements.approve');
