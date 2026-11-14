@@ -82,7 +82,7 @@ class BookingService
             }
 
             $total = $subtotal - $discount;
-            $commission = round($total * Commission::rentRate());
+            $commission = round($total * Commission::rentPercentFor($locked->owner) / 100);
             $code = $this->uniqueCode();
 
             $booking = Booking::create([

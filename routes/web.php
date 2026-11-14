@@ -133,6 +133,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/apartments/{apartment}/images/{image}', [Admin\ApartmentController::class, 'destroyImage'])->name('apartments.images.destroy');
 
         Route::get('/owners', [Admin\OwnerController::class, 'index'])->name('owners.index');
+        Route::patch('/owners/{owner}/commission', [Admin\OwnerController::class, 'updateCommission'])->name('owners.commission');
         Route::patch('/owners/{owner}/status', [Admin\OwnerController::class, 'updateStatus'])->name('owners.status');
 
         Route::get('/bookings', [Admin\BookingController::class, 'index'])->name('bookings.index');

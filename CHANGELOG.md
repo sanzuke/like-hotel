@@ -10,7 +10,8 @@ Format: tanggal, ringkasan per area. Entri terbaru di atas.
 - Komisi sewa 15% (`LIKEHOTEL_COMMISSION_RATE=0.15`); komisi jual/beli 5% sebagai nilai awal form closing (`LIKEHOTEL_SALE_COMMISSION_PERCENT`). Booking lama tidak dihitung ulang.
 - Geolokasi: kolom `lat`/`lng` pada unit (pin peta Leaflet/OpenStreetMap di form owner & admin), filter "Dekat landmark" (`config/likehotel.php` → `landmarks`) dan tombol "Dekat saya" di pencarian, jarak tampil di kartu, tautan peta di halaman unit. Urutan terdekat: iklan aktif dulu, lalu jarak, unit tanpa koordinat terakhir.
 - Pengaturan komisi di admin (Komisi & Settlement → Pengaturan Komisi): persentase komisi sewa dan default komisi jual/beli bisa diubah tanpa deploy (tabel `settings`, dicatat di audit log). Berlaku untuk booking baru; booking lama tetap. Nilai `.env` hanya fallback bila belum diatur.
-- Migrasi baru: `create_settings_table`, `add_ads_to_apartments`, `create_apartment_blocks_table`, `add_coordinates_to_apartments`. Server: `php artisan migrate`, perbarui `.env`, `config:clear`, `view:clear`.
+- Komisi sewa per owner: kolom `owners.commission_percent` (kosong = ikut tarif umum), diatur di Kelola Owner dan dicatat di audit log. Berlaku untuk booking baru.
+- Migrasi baru: `add_commission_to_owners`, `create_settings_table`, `add_ads_to_apartments`, `create_apartment_blocks_table`, `add_coordinates_to_apartments`. Server: `php artisan migrate`, perbarui `.env`, `config:clear`, `view:clear`.
 
 ## 2026-11-12 — Tombol hapus apartment (admin & owner)
 

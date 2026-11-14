@@ -29,6 +29,19 @@ class OwnerController extends Controller
         return view('admin.owners', ['owners' => $owners, 'filters' => $filters]);
     }
 
+    public function updateCommission(Request $request, Owner $owner)
+    {
+        $data = $request->validate(['commission_percent' => 'nullable|numeric|min:0|max:100']);
+        $from = $owner->commission_percent;
+        $to = ($data['commission_percent'] ?? '') === '' ? null : (float) $data['commission_percent'];
+        $owner->update(['commission_percent' => $to]);
+
+        $fmt = fn (?float $v) => $v === null ? 'umum' : $v.'%';
+        Audit::log('owner.commission', "Komisi owner {$owner->name}: {$fmt($from)} → {$fmt($to)}", $owner, ['from' => $from, 'to' => $to]);
+
+        return back()->with('success', $to === null ? "Komisi {$owner->name} mengikuti tarif umum." : "Komisi sewa {$owner->name} diatur {$to}%.");
+    }
+
     public function updateStatus(Request $request, Owner $owner)
     {
         $status = $request->validate(['status' => 'required|in:aktif,nonaktif'])['status'];

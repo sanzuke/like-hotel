@@ -54,4 +54,22 @@ class CommissionSettingTest extends TestCase
             ->assertSessionHasErrors(['rent_percent', 'sale_percent']);
         $this->assertEquals(15.0, Commission::rentPercent());
     }
+
+    public function test_owner_specific_rate_overrides_global_and_can_be_cleared(): void
+    {
+        $owner = \App\Models\Owner::create(['name' => 'VIP', 'phone' => '081', 'email' => 'v@x.com', 'password' => 'password123', 'status' => 'aktif']);
+        $a = Apartment::create(['owner_id' => $owner->id, 'owner_name' => 'VIP', 'name' => 'U', 'location' => 'B', 'type' => 'Studio', 'price_per_night' => 300000, 'status' => 'aktif']);
+        $admin = Admin::create(['name' => 'A', 'username' => 'adm', 'password' => 'password123']);
+        $this->actingAs($admin, 'admin');
+
+        $this->patch(route('admin.owners.commission', $owner), ['commission_percent' => '10'])->assertSessionHas('success');
+        $this->assertEquals(60000, $this->book($a, 3)->commission_amount);
+
+        $this->patch(route('admin.owners.commission', $owner), ['commission_percent' => ''])->assertSessionHas('success');
+        $this->assertNull($owner->fresh()->commission_percent);
+        $this->assertEquals(90000, $this->book($a, 10)->commission_amount);
+
+        $this->patch(route('admin.owners.commission', $owner), ['commission_percent' => '150'])->assertSessionHasErrors('commission_percent');
+        $this->get(route('admin.owners.index'))->assertOk()->assertSee('name="commission_percent"', false);
+    }
 }

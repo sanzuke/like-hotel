@@ -10,13 +10,13 @@ class Owner extends Authenticatable
 {
     public const SETTLEMENT_ACTIVE = ['pending', 'approved', 'paid'];
 
-    protected $fillable = ['name', 'phone', 'email', 'google_id', 'password', 'status'];
+    protected $fillable = ['name', 'phone', 'email', 'google_id', 'password', 'status', 'commission_percent'];
 
     protected $hidden = ['password', 'remember_token'];
 
     protected function casts(): array
     {
-        return ['password' => 'hashed'];
+        return ['password' => 'hashed', 'commission_percent' => 'float'];
     }
 
     /** Akun utama (guest) yang menautkan profil pemilik ini. */

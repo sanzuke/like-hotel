@@ -19,6 +19,12 @@ class Commission
         return $v !== null ? (float) $v : round(config('likehotel.commission_rate') * 100, 2);
     }
 
+    /** Komisi sewa untuk owner tertentu (persen): tarif khusus owner bila ada, selain itu tarif umum. */
+    public static function rentPercentFor(?\App\Models\Owner $owner): float
+    {
+        return $owner?->commission_percent ?? self::rentPercent();
+    }
+
     /** Komisi sewa sebagai pecahan, mis. 0.15. */
     public static function rentRate(): float
     {
