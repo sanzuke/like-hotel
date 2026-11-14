@@ -14,7 +14,7 @@
   </div>
   <div class="card-body">
     <h3>{{ $a->name }}</h3>
-    <p class="loc"><i class="ms">location_on</i> {{ $a->location }}</p>
+    <p class="loc"><i class="ms">location_on</i> {{ $a->location }}@if(isset($a->distance_km) && $a->distance_km !== null) &middot; <b>{{ \App\Support\Geo::label($a->distance_km) }}</b> dari {{ $origin['label'] ?? 'titik acuan' }}@endif</p>
     @if($facs->isNotEmpty())
       <div class="fac">@foreach($facs as $f)<span>{{ $f }}</span>@endforeach</div>
     @endif

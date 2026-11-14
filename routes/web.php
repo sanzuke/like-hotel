@@ -96,6 +96,12 @@ Route::prefix('owner')->name('owner.')->group(function () {
         Route::get('/', Owner\DashboardController::class)->name('dashboard');
         Route::get('/apartments', [Owner\ApartmentController::class, 'index'])->name('apartments.index');
         Route::post('/apartments', [Owner\ApartmentController::class, 'store'])->name('apartments.store');
+        Route::get('/apartments/{apartment}/edit', [Owner\ApartmentController::class, 'edit'])->name('apartments.edit');
+        Route::put('/apartments/{apartment}', [Owner\ApartmentController::class, 'update'])->name('apartments.update');
+        Route::post('/apartments/{apartment}/blocks', [Owner\ApartmentController::class, 'storeBlock'])->name('apartments.blocks.store');
+        Route::delete('/apartments/{apartment}/blocks/{block}', [Owner\ApartmentController::class, 'destroyBlock'])->name('apartments.blocks.destroy');
+        Route::post('/apartments/{apartment}/images/{image}/cover', [Owner\ApartmentController::class, 'setCover'])->name('apartments.cover');
+        Route::delete('/apartments/{apartment}/images/{image}', [Owner\ApartmentController::class, 'destroyImage'])->name('apartments.images.destroy');
         Route::delete('/apartments/{apartment}', [Owner\ApartmentController::class, 'destroy'])->name('apartments.destroy');
         Route::get('/bookings', [Owner\BookingController::class, 'index'])->name('bookings.index');
         Route::get('/settlements', [Owner\SettlementController::class, 'index'])->name('settlements.index');

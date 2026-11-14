@@ -72,6 +72,7 @@
     </select>
     <label>Nama Apartment</label><input name="name" value="{{ old('name') }}" required>
     <label>Lokasi</label><input name="location" value="{{ old('location') }}" required>
+    @include('partials.map-picker', ['id' => 'create'])
     <label>Kategori</label>
     <select name="category" required>
       @foreach(\App\Models\Apartment::CATEGORIES as $v => $l)<option value="{{ $v }}" @selected(old('category', 'apartment') === $v)>{{ $l }}</option>@endforeach

@@ -127,16 +127,22 @@ class ApartmentController extends Controller
             'owner_id' => 'nullable|exists:owners,id',
             'name' => 'required|string|max:180',
             'location' => 'required|string|max:180',
+            'lat' => 'nullable|numeric|between:-90,90|required_with:lng',
+            'lng' => 'nullable|numeric|between:-180,180|required_with:lat',
             'category' => 'required|in:apartment,hotel',
             'type' => 'required|string|max:80',
             'price_per_night' => 'required|numeric|min:0',
             'facilities' => 'nullable|string',
             'description' => 'nullable|string',
+            'ad_priority' => 'nullable|integer|min:0|max:3',
+            'ad_until' => 'nullable|date',
             'images' => 'nullable|array|max:10',
             'images.*' => ImageStore::RULE,
         ]);
 
         unset($data['images']);
+        $data['ad_priority'] = (int) ($data['ad_priority'] ?? 0);
+        $data['ad_until'] = $data['ad_priority'] > 0 ? ($data['ad_until'] ?? null) : null;
 
         return $data + ['owner_id' => null];
     }

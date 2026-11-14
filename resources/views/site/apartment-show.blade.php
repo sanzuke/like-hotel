@@ -55,7 +55,7 @@
       <span class="badge">{{ $a->categoryLabel() }}</span>
     </div>
     <h1>{{ $a->name }}</h1>
-    <p class="pd-loc"><i class="ms">pin_drop</i> {{ $a->location }}</p>
+    <p class="pd-loc"><i class="ms">pin_drop</i> {{ $a->location }}@if($a->lat !== null && $a->lng !== null) &middot; <a href="https://www.google.com/maps/search/?api=1&query={{ $a->lat }},{{ $a->lng }}" target="_blank" rel="noopener">Lihat di peta</a>@endif</p>
   </div>
 
   {{-- Galeri --}}

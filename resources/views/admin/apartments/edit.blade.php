@@ -14,6 +14,7 @@
     </select>
     <label>Nama Apartment</label><input name="name" value="{{ old('name', $apt->name) }}" required>
     <label>Lokasi</label><input name="location" value="{{ old('location', $apt->location) }}" required>
+    @include('partials.map-picker', ['id' => 'edit', 'lat' => $apt->lat, 'lng' => $apt->lng])
     <label>Kategori</label>
     <select name="category" required>
       @foreach(\App\Models\Apartment::CATEGORIES as $v => $l)<option value="{{ $v }}" @selected(old('category', $apt->category) === $v)>{{ $l }}</option>@endforeach
@@ -28,6 +29,15 @@
         <option value="{{ $v }}" @selected(old('status', $apt->status) === $v)>{{ $l }}</option>
       @endforeach
     </select>
+    <label>Iklan / Prioritas Tampil</label>
+    <select name="ad_priority">
+      @foreach([0 => 'Tanpa iklan', 1 => 'Prioritas 1', 2 => 'Prioritas 2', 3 => 'Prioritas 3 (paling atas)'] as $v => $l)
+        <option value="{{ $v }}" @selected((int) old('ad_priority', $apt->ad_priority) === $v)>{{ $l }}</option>
+      @endforeach
+    </select>
+    <label>Iklan Berlaku Sampai</label>
+    <input type="date" name="ad_until" value="{{ old('ad_until', $apt->ad_until?->toDateString()) }}">
+    <small>Unit dengan iklan aktif tampil lebih atas di beranda dan hasil pencarian. Kosongkan tanggal bila tanpa batas waktu.</small>
     <label>Tambah Foto Galeri</label>
     <input type="file" name="images[]" accept="image/jpeg,image/png,image/webp" multiple>
     <small>Maks. 10 foto (JPG/PNG/WEBP, 4 MB per foto).</small>

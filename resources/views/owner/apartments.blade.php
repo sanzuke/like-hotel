@@ -39,7 +39,7 @@
       <td>{{ $a->type }}</td>
       <td>{{ \App\Support\Fmt::rupiah($a->price_per_night) }}</td>
       <td><b style="color:{{ \App\Support\Fmt::statusColor($a->status) }}">{{ $a->status === 'nonaktif' ? 'menunggu verifikasi' : $a->status }}</b></td>
-      <td><form class="inline-form" method="post" action="{{ route('owner.apartments.destroy', $a) }}" onsubmit="return confirm('Hapus unit ini beserta fotonya?')">@csrf @method('DELETE')<button class="btn-outline">Hapus</button></form></td>
+      <td><a class="btn-outline" href="{{ route('owner.apartments.edit', $a) }}">Kelola</a> <form class="inline-form" method="post" action="{{ route('owner.apartments.destroy', $a) }}" onsubmit="return confirm('Hapus unit ini beserta fotonya?')">@csrf @method('DELETE')<button class="btn-outline">Hapus</button></form></td>
     </tr>
   @empty
     <tr><td colspan="7" style="text-align:center;color:#6b7280">
@@ -57,6 +57,7 @@
     @csrf
     <label>Nama Apartment</label><input name="name" value="{{ old('name') }}" required>
     <label>Lokasi</label><input name="location" value="{{ old('location') }}" required>
+    @include('partials.map-picker', ['id' => 'create'])
     <label>Kategori</label>
     <select name="category" required>
       @foreach(\App\Models\Apartment::CATEGORIES as $v => $l)<option value="{{ $v }}" @selected(old('category', 'apartment') === $v)>{{ $l }}</option>@endforeach

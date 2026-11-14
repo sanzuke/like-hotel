@@ -78,8 +78,8 @@ class LikeHotelFlowTest extends TestCase
 
         $b = $this->makeBooking($a);
         $this->assertEquals(600000, $b->total_price);
-        $this->assertEquals(60000, $b->commission_amount);
-        $this->assertEquals(540000, $b->owner_amount);
+        $this->assertEquals(90000, $b->commission_amount);
+        $this->assertEquals(510000, $b->owner_amount);
         $this->assertSame($owner->id, $b->owner_id);
 
         $this->post(route('booking.store', $a), $this->payload([
@@ -158,8 +158,8 @@ class LikeHotelFlowTest extends TestCase
     {
         $owner = $this->owner();
         $b = $this->makeBooking($this->apartment($owner));
-        $this->postJson('/midtrans/notification', $this->notification($b))->assertOk(); // hak owner 540.000
-        $this->assertEquals(540000, $owner->availableBalance());
+        $this->postJson('/midtrans/notification', $this->notification($b))->assertOk(); // hak owner 510.000
+        $this->assertEquals(510000, $owner->availableBalance());
 
         $bank = ['bank_name' => 'BCA', 'bank_account_name' => 'Owner A', 'bank_account_number' => '123'];
 
@@ -168,7 +168,7 @@ class LikeHotelFlowTest extends TestCase
         $this->actingAs($owner, 'owner');
         $this->post(route('owner.settlements.store'), $bank + ['amount' => 600000])->assertSessionHasErrors('amount');
         $this->post(route('owner.settlements.store'), $bank + ['amount' => 500000])->assertRedirect();
-        $this->assertEquals(40000, $owner->fresh()->availableBalance());
+        $this->assertEquals(10000, $owner->fresh()->availableBalance());
         $this->post(route('owner.settlements.store'), $bank + ['amount' => 100000])->assertSessionHasErrors('amount');
 
         $s = Settlement::firstOrFail();
@@ -185,7 +185,7 @@ class LikeHotelFlowTest extends TestCase
         $this->post(route('admin.settlements.pay-owner', $owner))->assertSessionHas('success');
         $this->post(route('admin.settlements.pay-owner', $owner))->assertSessionHas('error');
         $this->assertEquals(0, $owner->fresh()->availableBalance());
-        $this->assertEquals(540000, $owner->fresh()->totalPaid());
+        $this->assertEquals(510000, $owner->fresh()->totalPaid());
     }
 
     public function test_admin_pages_render_and_actions_need_post(): void

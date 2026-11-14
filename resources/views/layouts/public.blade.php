@@ -85,7 +85,8 @@
 <div class="footer no-print">
   <nav aria-label="Tautan footer"><a href="{{ route('apartments.index') }}">Sewa Apartment</a> &middot; <a href="{{ route('sale-units.index') }}">Jual Beli Apartment</a> &middot; <a href="{{ route('sale-request.create') }}">Titip Jual</a> &middot; <a href="{{ route('booking.check') }}">Cek Booking</a> &middot; @auth('guest')<a href="{{ route('account.index') }}">Akun Saya</a>@else<a href="{{ route('guest.login') }}">Masuk / Daftar</a>@endauth</nav>
   <b>Like Hotel Sewa Apartment Dekat</b><br>
-  WhatsApp: {{ \App\Support\Fmt::adminWaDisplay() }}
+  CS: {{ \App\Support\Fmt::adminWaDisplay() }}@if(\App\Support\Fmt::adminWa2Display()) &middot; {{ \App\Support\Fmt::adminWa2Display() }}@endif<br>
+  &copy; {{ date('Y') }} {{ config('likehotel.company') }}
   <div class="foot-badges"><span>QRIS</span><span>Virtual Account</span><span>Midtrans</span></div>
   @php $social = array_filter(config('likehotel.social')); @endphp
   @if($social)

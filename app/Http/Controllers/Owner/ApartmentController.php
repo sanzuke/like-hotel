@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
 use App\Models\Apartment;
+use App\Models\ApartmentBlock;
+use App\Models\ApartmentImage;
 use App\Support\Audit;
 use App\Support\ImageStore;
 use App\Support\TableFilter;
@@ -44,6 +46,8 @@ class ApartmentController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:180',
             'location' => 'required|string|max:180',
+            'lat' => 'nullable|numeric|between:-90,90|required_with:lng',
+            'lng' => 'nullable|numeric|between:-180,180|required_with:lat',
             'category' => 'required|in:apartment,hotel',
             'type' => 'required|string|max:80',
             'price_per_night' => 'required|numeric|min:0',
@@ -67,6 +71,123 @@ class ApartmentController extends Controller
         }
 
         return back()->with('success', 'Unit berhasil dikirim. Unit akan tampil setelah diaktifkan admin.');
+    }
+
+    public function edit(Apartment $apartment)
+    {
+        $this->authorizeUnit($apartment);
+
+        return view('owner.apartment-edit', [
+            'apt' => $apartment,
+            'images' => $apartment->images()->latest('id')->get(),
+            'blocks' => $apartment->blocks()->where('date_to', '>=', today())->orderBy('date_from')->get(),
+            'bookings' => $apartment->bookings()->blocking()->where('checkout', '>=', today())->orderBy('checkin')->get(),
+        ]);
+    }
+
+    public function update(Request $request, Apartment $apartment)
+    {
+        $this->authorizeUnit($apartment);
+
+        $rules = [
+            'name' => 'required|string|max:180',
+            'location' => 'required|string|max:180',
+            'lat' => 'nullable|numeric|between:-90,90|required_with:lng',
+            'lng' => 'nullable|numeric|between:-180,180|required_with:lat',
+            'category' => 'required|in:apartment,hotel',
+            'type' => 'required|string|max:80',
+            'price_per_night' => 'required|numeric|min:0',
+            'facilities' => 'nullable|string',
+            'description' => 'nullable|string',
+            'images' => 'nullable|array|max:10',
+            'images.*' => ImageStore::RULE,
+        ];
+
+        // Unit yang belum diverifikasi admin (nonaktif) tidak bisa diaktifkan sendiri oleh owner.
+        if ($apartment->status !== 'nonaktif') {
+            $rules['status'] = 'required|in:aktif,maintenance';
+        }
+
+        $data = $request->validate($rules);
+        unset($data['images']);
+
+        $apartment->update($data);
+        $this->attachImages($request, $apartment);
+        Audit::log('apartment.updated', "Unit \"{$apartment->name}\" diperbarui oleh owner", $apartment);
+
+        return redirect()->route('owner.apartments.edit', $apartment)->with('success', 'Perubahan disimpan.');
+    }
+
+    public function storeBlock(Request $request, Apartment $apartment)
+    {
+        $this->authorizeUnit($apartment);
+
+        $data = $request->validate([
+            'date_from' => 'required|date_format:Y-m-d|after_or_equal:today',
+            'date_to' => 'required|date_format:Y-m-d|after:date_from',
+            'note' => 'nullable|string|max:150',
+        ]);
+
+        $clash = $apartment->bookings()->blocking()->overlapping($data['date_from'], $data['date_to'])->exists();
+
+        if ($clash) {
+            return back()->withInput()->withErrors(['date_from' => 'Rentang ini sudah memiliki booking aktif, tidak bisa ditutup.']);
+        }
+
+        $apartment->blocks()->create($data);
+
+        return back()->with('success', 'Tanggal ditutup. Unit tidak bisa dibooking pada rentang tersebut.');
+    }
+
+    public function destroyBlock(Apartment $apartment, ApartmentBlock $block)
+    {
+        $this->authorizeUnit($apartment);
+        abort_unless($block->apartment_id === $apartment->id, 404);
+        $block->delete();
+
+        return back()->with('success', 'Tanggal dibuka kembali.');
+    }
+
+    public function setCover(Apartment $apartment, ApartmentImage $image)
+    {
+        $this->authorizeUnit($apartment);
+        abort_unless($image->apartment_id === $apartment->id, 404);
+        $apartment->update(['image' => $image->image]);
+
+        return back()->with('success', 'Cover diperbarui.');
+    }
+
+    public function destroyImage(Apartment $apartment, ApartmentImage $image)
+    {
+        $this->authorizeUnit($apartment);
+        abort_unless($image->apartment_id === $apartment->id, 404);
+
+        if ($apartment->image === $image->image) {
+            $apartment->update(['image' => null]);
+        }
+
+        ImageStore::delete($image->image, 'apartments');
+        $image->delete();
+
+        return back()->with('success', 'Foto dihapus.');
+    }
+
+    private function authorizeUnit(Apartment $apartment): void
+    {
+        // Owner hanya boleh mengelola unit miliknya sendiri.
+        abort_unless($apartment->owner_id === auth('owner')->id(), 404);
+    }
+
+    private function attachImages(Request $request, Apartment $apartment): void
+    {
+        foreach ($request->file('images', []) as $file) {
+            $name = ImageStore::store($file, 'apartments', 'apt');
+            $apartment->images()->create(['image' => $name]);
+
+            if (! $apartment->image) {
+                $apartment->update(['image' => $name]);
+            }
+        }
     }
 
     public function destroy(Apartment $apartment)

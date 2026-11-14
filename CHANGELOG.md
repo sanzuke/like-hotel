@@ -2,6 +2,15 @@
 
 Format: tanggal, ringkasan per area. Entri terbaru di atas.
 
+## 2026-11-14 — Mitra mandiri, iklan, komisi baru, kontak
+
+- Kontak CS: +62 896-5423-1118 dan +62 819-2713-8394; footer dan invoice memuat nama perusahaan PT ERA BARU PROPERTY (`LIKEHOTEL_COMPANY`, `LIKEHOTEL_ADMIN_WA_2`).
+- Mitra (owner) kini mengelola unitnya sendiri: ubah harga, status ketersediaan (aktif/maintenance), detail, foto dan cover, serta tutup/buka tanggal (tabel `apartment_blocks`). Tanggal tertutup memblokir booking dan hasil pencarian. Unit baru tetap menunggu verifikasi admin.
+- Iklan berbayar: admin mengatur `ad_priority` (0-3) dan `ad_until` per unit di Edit Apartment. Unit beriklan aktif tampil paling atas di beranda dan pencarian (urutan default).
+- Komisi sewa 15% (`LIKEHOTEL_COMMISSION_RATE=0.15`); komisi jual/beli 5% sebagai nilai awal form closing (`LIKEHOTEL_SALE_COMMISSION_PERCENT`). Booking lama tidak dihitung ulang.
+- Geolokasi: kolom `lat`/`lng` pada unit (pin peta Leaflet/OpenStreetMap di form owner & admin), filter "Dekat landmark" (`config/likehotel.php` → `landmarks`) dan tombol "Dekat saya" di pencarian, jarak tampil di kartu, tautan peta di halaman unit. Urutan terdekat: iklan aktif dulu, lalu jarak, unit tanpa koordinat terakhir.
+- Migrasi baru: `add_ads_to_apartments`, `create_apartment_blocks_table`, `add_coordinates_to_apartments`. Server: `php artisan migrate`, perbarui `.env`, `config:clear`, `view:clear`.
+
 ## 2026-11-12 — Tombol hapus apartment (admin & owner)
 
 - Admin Kelola Apartment dan Owner Unit Saya: tombol **Hapus** dengan konfirmasi. Apartment dihapus beserta fotonya dan dicatat di audit log (`apartment.deleted`).

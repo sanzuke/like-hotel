@@ -15,7 +15,7 @@
   <div class="invoice-head">
     <div>
       <div class="logo"><span class="logo-box">LH</span><span>LIKE HOTEL<br><small>Sewa Apartment Dekat</small></span></div>
-      <p>{{ config('likehotel.domain') }}<br>WhatsApp: {{ Fmt::adminWaDisplay() }}</p>
+      <p>{{ config('likehotel.company') }}<br>{{ config('likehotel.domain') }}<br>CS: {{ Fmt::adminWaDisplay() }}@if(Fmt::adminWa2Display()) &middot; {{ Fmt::adminWa2Display() }}@endif</p>
     </div>
     <div style="text-align:right">
       <div class="invoice-title">INVOICE</div>

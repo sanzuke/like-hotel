@@ -18,6 +18,13 @@
     <input type="date" name="checkin" min="{{ today()->toDateString() }}" value="{{ $filters['checkin'] ?? '' }}" title="Check-in" aria-label="Check-in">
     <input type="date" name="checkout" min="{{ today()->toDateString() }}" value="{{ $filters['checkout'] ?? '' }}" title="Check-out" aria-label="Check-out">
     <button class="btn"><i class="ms">search</i> Cari Apartment</button>
+    <select name="near" aria-label="Dekat landmark">
+      <option value="">Dekat mana saja</option>
+      @foreach(config('likehotel.landmarks') as $k => $lm)<option value="{{ $k }}" @selected(($filters['near'] ?? '') === $k)>Dekat {{ $lm[0] }}</option>@endforeach
+    </select>
+    <input type="hidden" name="lat" id="geo-lat" value="{{ $filters['lat'] ?? '' }}">
+    <input type="hidden" name="lng" id="geo-lng" value="{{ $filters['lng'] ?? '' }}">
+    <button type="button" class="btn-outline" id="geo-me"><i class="ms">my_location</i> Dekat saya</button>
 
     @if($advanced)
       <select name="type" style="grid-column:span 1">
@@ -26,7 +33,7 @@
       </select>
       <input type="number" min="0" step="10000" name="max_price" value="{{ $filters['max_price'] ?? '' }}" placeholder="Harga maks. / malam">
       <select name="sort">
-        @foreach(['terbaru' => 'Terbaru', 'termurah' => 'Harga terendah', 'termahal' => 'Harga tertinggi'] as $v => $l)
+        @foreach(['terbaru' => 'Terbaru', 'terdekat' => 'Terdekat', 'termurah' => 'Harga terendah', 'termahal' => 'Harga tertinggi'] as $v => $l)
           <option value="{{ $v }}" @selected(($filters['sort'] ?? 'terbaru') === $v)>{{ $l }}</option>
         @endforeach
       </select>
@@ -34,3 +41,25 @@
     @endif
   </form>
 </div>
+@once
+@push('scripts')
+<script>
+(function () {
+  var b = document.getElementById('geo-me'); if (!b) return;
+  var f = b.form, near = f.querySelector('[name=near]');
+  near.addEventListener('change', function () { document.getElementById('geo-lat').value = ''; document.getElementById('geo-lng').value = ''; });
+  b.addEventListener('click', function () {
+    if (!navigator.geolocation) { alert('Browser tidak mendukung geolokasi.'); return; }
+    b.disabled = true;
+    navigator.geolocation.getCurrentPosition(function (p) {
+      document.getElementById('geo-lat').value = p.coords.latitude.toFixed(6);
+      document.getElementById('geo-lng').value = p.coords.longitude.toFixed(6);
+      near.value = '';
+      var s = f.querySelector('[name=sort]'); if (s) s.value = 'terdekat';
+      f.submit();
+    }, function () { b.disabled = false; alert('Izin lokasi ditolak. Pilih landmark atau ketik lokasi tujuan.'); }, {timeout: 10000});
+  });
+})();
+</script>
+@endpush
+@endonce

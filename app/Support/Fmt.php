@@ -88,11 +88,25 @@ class Fmt
         return config('likehotel.admin_wa');
     }
 
-    /** Nomor admin untuk ditampilkan, mis. 0821 2924 8953. */
+    /** Format tampilan nomor, mis. +62 896-5423-1118. */
+    public static function phoneDisplay(?string $phone): string
+    {
+        $n = substr(self::normalizeWa($phone), 2);
+
+        return '+62 '.substr($n, 0, 3).'-'.substr($n, 3, 4).'-'.substr($n, 7);
+    }
+
+    /** Nomor CS utama untuk ditampilkan, mis. +62 896-5423-1118. */
     public static function adminWaDisplay(): string
     {
-        $local = '0'.substr(self::normalizeWa(self::adminWa()), 2);
+        return self::phoneDisplay(self::adminWa());
+    }
 
-        return trim(chunk_split($local, 4, ' '));
+    /** Nomor kontak kedua (opsional) untuk ditampilkan, atau string kosong. */
+    public static function adminWa2Display(): string
+    {
+        $n = config('likehotel.admin_wa_2');
+
+        return $n ? self::phoneDisplay($n) : '';
     }
 }

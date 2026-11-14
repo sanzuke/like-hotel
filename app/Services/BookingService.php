@@ -24,6 +24,12 @@ class BookingService
             }
         });
 
+        $apartment->blocks()->get(['date_from', 'date_to'])->each(function ($b) use (&$dates) {
+            for ($d = $b->date_from->copy(); $d->lt($b->date_to); $d->addDay()) {
+                $dates[] = $d->toDateString();
+            }
+        });
+
         return array_values(array_unique($dates));
     }
 
@@ -48,9 +54,13 @@ class BookingService
                 ->overlapping($checkin, $checkout)
                 ->exists();
 
+            if (! $conflict) {
+                $conflict = $locked->blocks()->overlapping($checkin, $checkout)->exists();
+            }
+
             if ($conflict) {
                 throw ValidationException::withMessages([
-                    'checkin' => 'Mohon maaf, unit ini sudah dipesan pada periode yang Anda pilih. Silakan pilih tanggal lain.',
+                    'checkin' => 'Mohon maaf, unit ini tidak tersedia pada periode yang Anda pilih. Silakan pilih tanggal lain.',
                 ]);
             }
 
