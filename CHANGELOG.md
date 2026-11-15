@@ -12,6 +12,7 @@ Format: tanggal, ringkasan per area. Entri terbaru di atas.
 - Pengaturan komisi di admin (Komisi & Settlement → Pengaturan Komisi): persentase komisi sewa dan default komisi jual/beli bisa diubah tanpa deploy (tabel `settings`, dicatat di audit log). Berlaku untuk booking baru; booking lama tetap. Nilai `.env` hanya fallback bila belum diatur.
 - Komisi sewa per owner: kolom `owners.commission_percent` (kosong = ikut tarif umum), diatur di Kelola Owner dan dicatat di audit log. Berlaku untuk booking baru.
 - Harga sewa bulanan dan tahunan (opsional) per unit: kolom `price_per_month`/`price_per_year`, diisi owner dan admin, tampil di detail unit beserta tombol WhatsApp pengajuan sewa jangka panjang. Booking online tetap per malam. Beranda: banner "Harga Spesial Corporate & Booking Group" (WhatsApp).
+- Form Titip Jual: unggah beberapa foto unit sekaligus (opsional, maks. 10, tersimpan sebagai foto lead dan tampil di CRM admin).
 - Migrasi baru: `add_monthly_yearly_prices_to_apartments`, `add_commission_to_owners`, `create_settings_table`, `add_ads_to_apartments`, `create_apartment_blocks_table`, `add_coordinates_to_apartments`. Server: `php artisan migrate`, perbarui `.env`, `config:clear`, `view:clear`.
 
 ## 2026-11-12 — Tombol hapus apartment (admin & owner)

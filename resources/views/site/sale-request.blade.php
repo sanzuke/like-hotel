@@ -8,7 +8,7 @@
   <p class="muted">Isi data unit Anda. Tim Like Hotel akan menghubungi untuk survei dan penawaran. Diajukan sebagai <b>{{ $guest->email }}</b>.</p>
   @if(session('error'))<div class="alert danger">{{ session('error') }}</div>@endif
   @if($errors->any())<div class="alert danger">@foreach($errors->all() as $e){{ $e }}<br>@endforeach</div>@endif
-  <form method="post" action="{{ route('sale-request.store') }}">
+  <form method="post" action="{{ route('sale-request.store') }}" enctype="multipart/form-data">
     @csrf
     <label>Nama Pemilik</label><input name="owner_name" value="{{ old('owner_name', $guest->name) }}" placeholder="Nama lengkap pemilik unit" required>
     <label>No WhatsApp</label><input name="owner_phone" value="{{ old('owner_phone', $guest->phone) }}" placeholder="Contoh: 082129248953" required>
@@ -18,6 +18,11 @@
     <label>Luas</label><input name="size" value="{{ old('size') }}" placeholder="Contoh: 34 m2">
     <label>Harga yang Diharapkan</label><input type="number" min="0" name="expected_price" value="{{ old('expected_price') }}">
     <label>Catatan</label><textarea name="notes">{{ old('notes') }}</textarea>
+    <label>Foto Unit (bisa lebih dari satu)</label>
+    <input type="file" name="photos[]" accept="image/jpeg,image/png,image/webp" multiple>
+    <small>Opsional, maks. 10 foto (JPG/PNG/WEBP, 4 MB per foto). Tekan Ctrl/Shift atau pilih beberapa foto sekaligus.</small>
+    @error('photos')<div class="field-error">{{ $message }}</div>@enderror
+    @error('photos.*')<div class="field-error">{{ $message }}</div>@enderror
     @include('partials.turnstile')
     <button class="btn">Kirim Pengajuan</button>
   </form>

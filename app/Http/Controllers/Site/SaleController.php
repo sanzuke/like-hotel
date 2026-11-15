@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Site;
 
 use App\Http\Controllers\Controller;
 use App\Models\SaleRequest;
+use App\Models\SaleRequestPhoto;
 use App\Models\SaleUnit;
 use App\Rules\Turnstile;
 use App\Support\Audit;
+use App\Support\ImageStore;
 use Illuminate\Http\Request;
 
 class SaleController extends Controller
@@ -84,10 +86,18 @@ class SaleController extends Controller
             'size' => 'nullable|string|max:50',
             'expected_price' => 'nullable|numeric|min:0',
             'notes' => 'nullable|string|max:2000',
+            'photos' => 'nullable|array|max:10',
+            'photos.*' => ImageStore::RULE,
             'cf-turnstile-response' => [new Turnstile],
         ], ['owner_phone.regex' => 'Nomor WhatsApp tidak valid.']);
 
+        unset($data['photos']);
+
         $lead = SaleRequest::create($data + ['status' => 'baru', 'guest_id' => $guest->id]);
+        foreach ($request->file('photos', []) as $file) {
+            $lead->photos()->create(['image' => ImageStore::store($file, SaleRequestPhoto::FOLDER, 'lead')]);
+        }
+
         $lead->hasMany(\App\Models\SaleRequestNote::class)->create(['type' => 'catatan', 'body' => "Pengajuan masuk dari akun {$guest->email}.", 'author' => 'Sistem']);
         Audit::log('crm.lead_created', "Lead titip jual baru: {$lead->owner_name} ({$lead->apartment_name})", $lead, [], ['type' => 'guest', 'id' => $guest->id, 'name' => $guest->name]);
 
