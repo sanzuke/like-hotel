@@ -118,6 +118,14 @@
     <aside class="pd-side">
       <form class="pd-book" method="get" action="{{ route('booking.create', $a) }}" id="bookCard">
         <div class="pd-price"><b>{{ \App\Support\Fmt::rupiah($price) }}</b><span>/ malam</span></div>
+        @if($a->price_per_month || $a->price_per_year)
+          <div class="pd-longterm">
+            <b>Sewa jangka panjang</b>
+            @if($a->price_per_month)<div><span>Per bulan</span><strong>{{ \App\Support\Fmt::rupiah($a->price_per_month) }}</strong></div>@endif
+            @if($a->price_per_year)<div><span>Per tahun</span><strong>{{ \App\Support\Fmt::rupiah($a->price_per_year) }}</strong></div>@endif
+            <a href="{{ \App\Support\Fmt::waLink(\App\Support\Fmt::adminWa(), 'Halo Like Hotel, saya tertarik sewa bulanan/tahunan untuk '.$a->name.' ('.$a->type.'). Mohon info ketersediaan dan prosesnya.') }}" target="_blank" rel="noopener"><i class="ms">chat</i> Ajukan sewa bulanan / tahunan</a>
+          </div>
+        @endif
         <div class="pd-dates">
           <label>Check-in<input type="date" name="checkin" id="ci" min="{{ today()->toDateString() }}" value="{{ request('checkin') }}"></label>
           <label>Check-out<input type="date" name="checkout" id="co" min="{{ today()->toDateString() }}" value="{{ request('checkout') }}"></label>

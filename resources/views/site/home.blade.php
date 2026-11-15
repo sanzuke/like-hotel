@@ -76,6 +76,16 @@
 </section>
 
 <section class="section">
+  <div class="corp-cta">
+    <div>
+      <h2>Dapatkan Harga Spesial Corporate &amp; Booking Group</h2>
+      <p>Untuk perusahaan, rombongan, atau kebutuhan banyak unit, kami siapkan penawaran khusus. Hubungi CS kami untuk mendapatkan harga terbaik.</p>
+    </div>
+    <a class="btn" href="{{ \App\Support\Fmt::waLink(\App\Support\Fmt::adminWa(), 'Halo Like Hotel, saya ingin mendapatkan harga spesial Corporate / Booking Group.') }}" target="_blank" rel="noopener"><i class="ms">chat</i> Minta Penawaran</a>
+  </div>
+</section>
+
+<section class="section">
   <h2>Rekomendasi Sewa Apartemen Harian &amp; Bulanan</h2>
   <p class="section-subtitle">Pilihan unit apartemen aktif dari owner terverifikasi yang siap disewa.</p>
   <div class="grid">

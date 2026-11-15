@@ -132,6 +132,8 @@ class ApartmentController extends Controller
             'category' => 'required|in:apartment,hotel',
             'type' => 'required|string|max:80',
             'price_per_night' => 'required|numeric|min:0',
+            'price_per_month' => 'nullable|numeric|min:0',
+            'price_per_year' => 'nullable|numeric|min:0',
             'facilities' => 'nullable|string',
             'description' => 'nullable|string',
             'ad_priority' => 'nullable|integer|min:0|max:3',

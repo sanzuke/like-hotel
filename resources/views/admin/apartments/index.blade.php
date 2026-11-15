@@ -79,6 +79,8 @@
     </select>
     <label>Tipe</label><input name="type" value="{{ old('type') }}" placeholder="Studio / 1 Bedroom / 2 Bedroom" required>
     <label>Harga per Malam</label><input type="number" min="0" name="price_per_night" value="{{ old('price_per_night') }}" required>
+    <label>Harga per Bulan (opsional)</label><input type="number" min="0" name="price_per_month" value="{{ old('price_per_month') }}">
+    <label>Harga per Tahun (opsional)</label><input type="number" min="0" name="price_per_year" value="{{ old('price_per_year') }}">
     <label>Fasilitas</label><textarea name="facilities" placeholder="AC, WiFi, TV, Parkir">{{ old('facilities') }}</textarea>
     <label>Foto Apartment</label>
     <input type="file" name="images[]" accept="image/jpeg,image/png,image/webp" multiple>

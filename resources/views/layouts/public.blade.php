@@ -35,7 +35,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=block">
 <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=20">
-<link rel="stylesheet" href="{{ asset('css/site.css') }}?v=17">
+<link rel="stylesheet" href="{{ asset('css/site.css') }}?v=18">
 @stack('head')
 @stack('jsonld')
 </head>

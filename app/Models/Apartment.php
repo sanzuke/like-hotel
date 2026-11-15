@@ -24,13 +24,13 @@ class Apartment extends Model
 
     protected $fillable = [
         'owner_id', 'owner_name', 'name', 'location', 'type', 'category',
-        'price_per_night', 'facilities', 'description', 'image', 'status',
+        'price_per_night', 'price_per_month', 'price_per_year', 'facilities', 'description', 'image', 'status',
         'ad_priority', 'ad_until', 'lat', 'lng',
     ];
 
     protected function casts(): array
     {
-        return ['price_per_night' => 'decimal:2', 'ad_until' => 'date', 'lat' => 'float', 'lng' => 'float'];
+        return ['price_per_night' => 'decimal:2', 'price_per_month' => 'decimal:2', 'price_per_year' => 'decimal:2', 'ad_until' => 'date', 'lat' => 'float', 'lng' => 'float'];
     }
 
     public function owner(): BelongsTo

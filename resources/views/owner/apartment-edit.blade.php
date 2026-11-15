@@ -20,6 +20,8 @@
     </select>
     <label>Tipe</label><input name="type" value="{{ old('type', $apt->type) }}" required>
     <label>Harga per Malam</label><input type="number" min="0" name="price_per_night" value="{{ old('price_per_night', (int) $apt->price_per_night) }}" required>
+    <label>Harga per Bulan (opsional)</label><input type="number" min="0" name="price_per_month" value="{{ old('price_per_month', $apt->price_per_month ? (int) $apt->price_per_month : '') }}">
+    <label>Harga per Tahun (opsional)</label><input type="number" min="0" name="price_per_year" value="{{ old('price_per_year', $apt->price_per_year ? (int) $apt->price_per_year : '') }}">
     <small>Perubahan harga hanya berlaku untuk booking baru.</small>
     @if($apt->status !== 'nonaktif')
       <label>Status Ketersediaan</label>

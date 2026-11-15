@@ -528,3 +528,13 @@ body.site .form-box .muted a{color:var(--primary);font-weight:700}
   .mb-grid{grid-template-columns:1fr}
   .bottom-nav a{min-width:0;flex:1}
 }
+
+/* Harga jangka panjang & CTA corporate */
+.pd-longterm{margin:12px 0 4px;padding:12px 14px;border-radius:14px;background:#f2f9f4;border:1px solid var(--line)}
+.pd-longterm>b{display:block;font-size:13px;margin-bottom:6px}
+.pd-longterm div{display:flex;justify-content:space-between;gap:8px;font-size:14px;padding:3px 0}
+.pd-longterm strong{color:var(--primary)}
+.pd-longterm a{display:inline-flex;gap:6px;align-items:center;margin-top:8px;font-size:13px;font-weight:700;color:var(--primary)}
+.corp-cta{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;background:var(--dark);color:#fff;border-radius:20px;padding:24px 28px}
+.corp-cta h2{margin:0 0 6px;font-size:22px;text-align:left;color:#fff}
+.corp-cta p{margin:0;color:#d1fae5;max-width:640px;line-height:1.6}
