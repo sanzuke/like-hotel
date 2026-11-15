@@ -15,8 +15,8 @@
       <option value="">Semua kategori</option>
       @foreach($categories as $v => $l)<option value="{{ $v }}" @selected(($filters['category'] ?? '') === $v)>{{ $l }}</option>@endforeach
     </select>
-    <input type="date" name="checkin" min="{{ today()->toDateString() }}" value="{{ $filters['checkin'] ?? '' }}" title="Check-in" aria-label="Check-in">
-    <input type="date" name="checkout" min="{{ today()->toDateString() }}" value="{{ $filters['checkout'] ?? '' }}" title="Check-out" aria-label="Check-out">
+    <input type="{{ ! empty($filters['checkin']) ? 'date' : 'text' }}" name="checkin" placeholder="Check-in" min="{{ today()->toDateString() }}" value="{{ $filters['checkin'] ?? '' }}" title="Check-in" aria-label="Check-in" autocomplete="off" onfocus="this.type='date';try{this.showPicker()}catch(e){}" onblur="if(!this.value)this.type='text'">
+    <input type="{{ ! empty($filters['checkout']) ? 'date' : 'text' }}" name="checkout" placeholder="Check-out" min="{{ today()->toDateString() }}" value="{{ $filters['checkout'] ?? '' }}" title="Check-out" aria-label="Check-out" autocomplete="off" onfocus="this.type='date';try{this.showPicker()}catch(e){}" onblur="if(!this.value)this.type='text'">
     <button class="btn"><i class="ms">search</i> Cari Apartment</button>
     <select name="near" aria-label="Dekat landmark">
       <option value="">Dekat mana saja</option>
