@@ -1,5 +1,35 @@
 # Status & Progres Harian
 
+## 2026-11-14 s/d 2026-11-17
+
+**Status: live di https://likehotelapartemen.com (production) dan https://likehotel.zukelabs.web.id (staging), commit `444fc2e` di `main`.** Tes: 105 lolos.
+
+### Selesai
+- [x] Kontak CS baru (+62 896-5423-1118, +62 819-2713-8394) dan nama perusahaan PT ERA BARU PROPERTY di footer dan invoice (`LIKEHOTEL_ADMIN_WA`, `LIKEHOTEL_ADMIN_WA_2`, `LIKEHOTEL_COMPANY`).
+- [x] Owner kelola unit sendiri (`/owner/apartments/{id}/edit`): harga, status aktif/maintenance, foto, tutup tanggal (tabel `apartment_blocks`). Unit baru tetap menunggu verifikasi admin.
+- [x] Iklan berbayar: `apartments.ad_priority` (0-3) dan `ad_until`, diatur admin; unit beriklan tampil teratas (scope `Apartment::ranked`). Pembayaran iklan belum dicatat di aplikasi.
+- [x] Komisi sewa 15% dan jual/beli 5%, kini bisa diubah admin di Komisi & Settlement (tabel `settings`, class `App\Support\Commission`); nilai .env hanya fallback. Komisi per owner lewat `owners.commission_percent` (kosong = tarif umum). Nominal komisi disimpan per booking, jadi laporan lama tidak berubah saat tarif naik.
+- [x] Geolokasi: `apartments.lat/lng`, peta Leaflet/OSM di form owner dan admin, filter Dekat landmark (`config/likehotel.php` → `landmarks`), tombol Dekat saya, jarak di kartu (`App\Support\Geo`).
+- [x] Placeholder Check-in/Check-out pada filter tanggal.
+- [x] Harga per bulan dan per tahun (`price_per_month`, `price_per_year`) tampil di detail unit; banner Harga Spesial Corporate & Booking Group di beranda.
+- [x] Titip jual: unggah banyak foto (maks. 10).
+- [x] Login Google: client ID/secret baru disalin ke .env kedua server; redirect URI tidak lagi mismatch di keempat alamat.
+
+### Antrean (belum dikerjakan)
+- [ ] Kolom `commission_percent` per booking (isi booking lama dari nominal/total), tampil di laporan dan CSV. Disetujui, ditampung dulu.
+- [ ] Pembayaran iklan: paket harga, invoice, pencatatan.
+- [ ] Stok jumlah kamar per unit (sekarang satu unit = satu kamar).
+- [ ] Booking online untuk harga bulanan/tahunan (sekarang hanya tampil; pengajuan lewat WhatsApp).
+- [ ] Isi koordinat unit lama (tanpa koordinat muncul paling bawah di urutan jarak).
+- [ ] Uji login Google sampai selesai di browser; uji tampilan peta, Dekat saya, halaman pengaturan komisi.
+- [ ] Go-live: impor data lama ke production (masih kosong), Midtrans production, email (MAIL_MAILER=log), uji E2E, hapus login owner lama.
+- [ ] `config/likehotel.php` domain masih likehotelsewa.com, situs live likehotelapartemen.com.
+
+### Catatan operasional
+- **Deploy production:** `.\deploy.ps1` dari folder induk (backup, migrate, cache, health check, rollback otomatis). **Staging:** tar kode ke zukelabs, ekstrak ke `/opt/likehotel` (abaikan error chmod storage), lalu `migrate --force` dan `config:cache`/`route:cache`/`view:cache`.
+- Backup staging sebelum deploy 14 Nov: `~/likehotel-db-*.sql` dan `~/likehotel-code-*.tar.gz`. Production tidak dibackup databasenya pada deploy 14-16 Nov (migrasi hanya menambah kolom/tabel).
+- Cek Google OAuth: ikuti redirect ke accounts.google.com; 302 saja tidak membuktikan URI terdaftar, harus tidak ada `redirect_uri_mismatch` di halaman akhir.
+
 ## 2026-11-12 (Kamis)
 
 **Status: live di https://likehotelapartemen.com.** cPanel + LiteSpeed, PHP 8.3, database `likehote_likehotel` terhubung (25 tabel, 16 migrasi, 1 admin). Data bisnis masih kosong.
